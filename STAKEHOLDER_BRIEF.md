@@ -1,17 +1,25 @@
 # DAIG Haleem — Status & What We Need From You
 
-**Date:** 9 August 2026  
-**Purpose:** Share with founder / ops / finance / legal so they know what is already built in planning, what is not built yet, and what decisions / accounts / keys are needed before coding starts in earnest.
+**Date:** 9 August 2026 (updated after stakeholder pass 1)  
+**Purpose:** Share progress, what is already decided, and the remaining asks (ops answers + API keys/accounts) so the next person can act without reading the full PRD.
+
+**Source of answers:** `REQUIRED_DECISIONS.txt`  
+**Repo:** https://github.com/zeyan-ansari/DAIGHALEEM
 
 ---
 
 ## 1. One-line summary
 
-We are building a **single-brand haleem delivery platform** (customer app + rider app + kitchen/dispatch web + backend) — **not** a Zomato/Swiggy marketplace.
+We are building a **single-brand DAIG Haleem delivery platform** (customer app + rider app + kitchen/dispatch web + backend) — **not** a marketplace like Zomato/Swiggy.
 
-**Done so far:** product requirements + a full phased build plan and instruction system in the `DAIGHALEEM` repo.  
-**Not done yet:** the actual apps/repos, live payments, maps, SMS, or a running pilot.  
-**Blocked on you:** business/ops decisions, brand assets, vendor accounts, and (soon) API keys / sandbox credentials.
+| Area | Status |
+|------|--------|
+| Product blueprint + phased build plan | **Done** (in this repo) |
+| Business decisions | **Partially filled** — several critical gaps remain |
+| App code (`daig-backend`, Flutter apps, console) | **Not started** |
+| Live vendor keys (Razorpay, Maps, SMS, etc.) | **Not received** |
+
+**Pilot city (known):** Mira Road, Maharashtra · **COD:** off for pilot · **Pickup:** off for MVP
 
 ---
 
@@ -19,201 +27,157 @@ We are building a **single-brand haleem delivery platform** (customer app + ride
 
 | Audience | Product | Device |
 |----------|---------|--------|
-| Customer | Order DAIG Haleem, pay, track, support | Android + iOS app |
-| Rider | Go online, pickup, deliver, earnings | Android app first |
-| Kitchen / Dispatch / Support / Admin | Queue, pack, assign riders, refunds, catalogue, reports | Web console |
-| System | Orders, inventory batches, payments, ETA, ledgers | Backend APIs |
+| Customer | Order DAIG Haleem, pay prepaid, track, support | Android + iOS (Flutter) |
+| Rider | Go online, pickup, deliver, earnings | Android first (Flutter) |
+| Kitchen / Dispatch / Support / Admin | Queue, pack, assign, refunds, catalogue, reports | Next.js web |
+| System | Batches/stock, orders, payments, ETA, ledgers | NestJS + Postgres + Redis |
 
-**Pilot recommendation (from PRD):** one kitchen + one delivery zone, prepaid by default, scheduled slots + limited instant orders, Android-first riders. Defer COD, loyalty, referrals, and multi-order rider batching until delivery reliability looks good.
-
----
-
-## 3. What has been done (current status)
-
-All of this lives in the **`DAIGHALEEM`** (platform / planning) repository:
-
-| Item | Status | What it means |
-|------|--------|----------------|
-| Product Requirements Document (PRD) | Done | Full spec: apps, workflows, payments, kitchen, dispatch, security, MVP phases |
-| Confirmed tech stack | Done | Backend NestJS + Postgres + Redis; Customer & Rider Flutter; Console Next.js |
-| Separate-repo architecture | Done (on paper) | Four app repos planned as siblings; code not created yet |
-| Phase implementation system (12 phases) | Done | ~120 small task instruction pages + tests + handoff prompts |
-| Shared API contracts skeleton | Done | OpenAPI + order states / error codes / analytics event names |
-| Decisions questionnaire | Done (empty answers) | `REQUIRED_DECISIONS.txt` — waiting for your inputs |
-| Autostart prompt for builders | Done | `START_IMPLEMENTATION.txt` — paste into Cursor with multi-task mode |
-| Actual `daig-backend` / apps | **Not started** | Sibling folders do not exist yet |
-| Live vendor integrations | **Not started** | Will use mocks until you provide sandbox keys |
-
-**Bottom line for a non-technical reader:** the “blueprint and factory instructions” are ready. The “factory has not started assembling the product” until decisions and accounts below are filled.
+**Pilot cut:** one kitchen + one zone · prepaid only · instant + scheduled slots · Android-first riders. Defer COD, loyalty, referrals, rider multi-order batching.
 
 ---
 
-## 4. What we need from you **now** (blockers)
+## 3. What engineering has already done
 
-Please answer these. You can write answers directly into `REQUIRED_DECISIONS.txt`, or reply in email/chat and we will paste them in.
+In **`DAIGHALEEM`** (pushed to GitHub):
 
-### A. Business & operations (must answer before real build past bootstrap)
-
-| # | Topic | What to tell us | Who usually owns it |
-|---|--------|-----------------|---------------------|
-| D01 | **Launch geography** | Kitchen address + map pin (lat/lng). Delivery radius **or** polygon. Example streets/areas you will serve in pilot. | Founder / Ops |
-| D02 | **Order model** | Instant? Scheduled slots? Preorder-only on some days? Pickup yes/no? Hours per mode. | Founder / Ops |
-| D03 | **Menu** | Launch items, sizes/weights (e.g. single / family), add-ons, combos, allergens, what “sold out” means (portions). | Culinary / Ops |
-| D04 | **Kitchen capacity** | Portions per batch; max orders you can prep/pack per **15 minutes**. | Kitchen |
-| D05 | **Riders model** | Employees vs contractors vs vendor? Shifts vs “go online when free”? | Founder / Legal / Ops |
-| D06 | **Rider pay** | Base pay, distance, wait, surge, tips, payout day/method. | Finance / Ops |
-| D07 | **Customer fees** | Delivery fee rules, packaging fee, minimum order, GST approach, free-delivery threshold. | Finance |
-| D08 | **Cash on delivery** | On or off for pilot? If on: max order value, zones, cash limits. *(We recommend OFF for pilot.)* | Finance / Ops |
-| D09 | **Cancel / refund rules** | When customer can cancel; when full/partial refund; how much support agents can refund without manager. | Founder / Support / Legal |
-| D10 | **Support** | Hours, channels (app chat / call / WhatsApp), who escalates what, response targets. | Ops |
-| D11 | **Peak volume guess** | Normal vs peak orders per 15 min; how many riders you expect online in pilot. | Founder / Ops |
-| D12 | **Brand** | Logo files, colours, fonts, food photos, tone of voice (or “use placeholders for now”). | Brand / Design |
-| D15 | **Compliance** | Legal entity name, GSTIN, FSSAI number/text to show, who owns Terms/Privacy, rider contract approach, data retention. | Legal / Finance |
-
-### B. Already decided (no action unless you want to change)
-
-| # | Topic | Current answer |
-|---|--------|----------------|
-| D13 | Platforms | Customer: Android + iOS. Rider: Android first. No public customer website ordering in MVP. Admin is web. |
-| D16 | Repo layout | Apps will live next to this folder as `daig-backend`, `daig-customer-app`, `daig-rider-app`, `daig-web-console`. |
+| Item | Status |
+|------|--------|
+| Full Product Requirements Document | Done |
+| Confirmed stack + 4 separate app repos (planned) | Done on paper |
+| 12-phase implementation system (~120 small task pages + tests) | Done |
+| Shared API contracts skeleton | Done |
+| `START_IMPLEMENTATION.txt` (autonomous build prompt) | Done |
+| This stakeholder brief + decisions questionnaire | Done / updating |
+| Actual sibling app repositories | **Not created yet** |
+| Production/staging integrations | **Not started** |
 
 ---
 
-## 5. What you will need to arrange — accounts, API keys, credentials
+## 4. Decision scoreboard (pass 1)
 
-You do **not** need every production key on day one. Prefer **sandbox / test** credentials first. **Never send secret keys in a public chat or commit them to git** — share via password manager / secure note.
+| ID | Topic | Status | Summary |
+|----|--------|--------|---------|
+| D01 | Launch geography | **PARTIAL** | Mira Road only — need exact kitchen pin + radius/polygon |
+| D02 | Order model | **PARTIAL** | Instant + scheduled + preorder; pickup off — need days/hours/slots |
+| D03 | Menu | **PARTIAL** | 3 haleem types × 500 g / 1 kg proposed — need prices, add-ons, allergens |
+| D04 | Capacity | **UNANSWERED** | Need batch size + 15-min prep/pack ceilings |
+| D05 | Delivery workforce | **UNANSWERED** | Employee vs contractor vs vendor; shifts vs go-online |
+| D06 | Rider pay | **UNANSWERED** | Base / distance / tips / payout cadence |
+| D07 | Customer fees | **PARTIAL** | Distance delivery fee; packaging in item price — need min order + free-delivery threshold + GST |
+| D08 | COD | **ANSWERED** | Disabled for pilot; feature-flagged for later |
+| D09 | Cancel / refund | **ANSWERED** | Stage rules + agent limit ₹500 / manager above |
+| D10 | Support | **PARTIAL** | In-app + WhatsApp; SLAs proposed — need hours + named owners |
+| D11 | Peak forecast | **UNANSWERED** | Orders/15 min + rider count |
+| D12 | Brand UX | **PARTIAL** | Black / deep maroon / muted gold direction — **logo files still required** |
+| D13 | Platforms | **ANSWERED** | Flutter customer + rider; Next.js console; no customer web MVP |
+| D14 | Vendors | **PARTIAL** | Proposed: Razorpay, Google Maps, MSG91, Exotel, Meta WhatsApp, Firebase — **approval + keys pending** |
+| D15 | Compliance | **PARTIAL** | Hashforgamers Pvt Ltd proposed only if correct — GSTIN/FSSAI/policies pending |
+| D16 | Repo paths | **ANSWERED** | Sibling folders under `~/Desktop/Projects/` |
+| D17 | Pilot date | **UNANSWERED** *(new)* | Soft-launch week + go/no-go owner |
+| D18 | Store accounts | **UNANSWERED** *(new)* | Google Play + Apple Developer ownership |
+| D19 | Domains / URLs | **UNANSWERED** *(new)* | API/ops domains + support emails |
+| D20 | Tax invoice | **UNANSWERED** *(new)* | Legal name, GST, HSN, tax-inclusive prices? |
+| D21 | Pilot test users | **UNANSWERED** *(new)* | Internal phones + first admin accounts |
+| D22 | Languages | **PARTIAL** *(new)* | Default English + Hindi — confirm |
+| D23 | Pack / quality SOP | **UNANSWERED** *(new)* | Spill-proof checklist for kitchen/rider apps |
+| D24 | Cloud hosting | **UNANSWERED** *(new)* | AWS/GCP/PaaS + billing owner |
+| D25 | Vendor billing owner | **UNANSWERED** *(new)* | Who pays Maps/SMS/Firebase/Apple fees |
 
-### Required for a real pilot (choose vendors, then create accounts)
+---
 
-| Integration | Why we need it | What to create / send us | When needed |
-|-------------|----------------|---------------------------|-------------|
-| **Payment gateway** (e.g. Razorpay, PayU, Cashfree — your choice) | UPI / cards / netbanking, refunds | Merchant account + **sandbox** key ID/secret + webhook secret; later live keys | Before Phase 05 (orders/payments). Can mock until then. |
-| **OTP / SMS** (e.g. MSG91, Twilio, Exotel) | Login OTP, critical SMS | Account + sender ID / DLT templates (India) + API key | Before real auth (Phase 02 can use mock OTP). |
-| **Maps / geocoding / routing** (e.g. Google Maps, Mapbox) | Address search, zones, ETA, rider navigation handoff | API key with billing enabled; restrict by app/bundle/IP | Before solid serviceability & tracking (Phases 04 / 08). Mock OK early. |
-| **Push notifications** (FCM + APNs) | Order updates on phones | Firebase project for Android; Apple Developer + APNs key for iOS | Before real customer/rider push (Phase 08). |
-| **Object storage** (e.g. S3, GCS, Cloudflare R2) | Menu images, spill/evidence photos | Bucket + access keys (staging) | When catalogue images / support evidence go live. |
-| **Hosting / database** (e.g. AWS / GCP / Railway / Render + managed Postgres/Redis) | Run backend & workers | Staging project access | When we leave local docker (Phase 01 is local first). |
+## 5. What we need from you **next** (prioritized)
 
-### Strongly recommended (can defer slightly)
+### Priority A — unblock accurate pilot config (this week)
 
-| Integration | Why | What to create |
-|-------------|-----|----------------|
-| **Masked calling / in-app chat** | Customer ↔ rider without sharing raw numbers | Provider account (e.g. Exotel, Twilio Proxy, or similar) |
-| **WhatsApp Business API** (optional) | Transactional order updates | Meta / BSP account + approved templates + consent rules |
-| **Crash / analytics** (e.g. Firebase Crashlytics, Sentry, Mixpanel) | Stability + funnel | Project keys (no PII in events) |
-| **KYC provider** (for riders) | Aadhaar/DL/PAN verification | Approved KYC vendor account (Phase 07 deepens this) |
+Answer these even as rough numbers; engineering can start scaffolding in parallel.
 
-### Apple / Google (store & device)
+1. **D01** — Exact kitchen address + lat/lng + delivery radius **or** area list for Mira Road  
+2. **D02** — Operating days/hours + slot length + order cutoff  
+3. **D03** — Final menu with **prices**, add-ons, allergens  
+4. **D04** — Batch size + max orders per 15 minutes (prep and pack)  
+5. **D07** — Min order (₹), free-delivery threshold (or none), delivery fee table  
+6. **D12** — Deliver **DAIG logo files** (SVG/PNG)  
+7. **D14** — Confirm vendor set (Razorpay / Google Maps / MSG91 / Exotel / WhatsApp / Firebase)  
+8. **D15** — Confirm legal entity (Hashforgamers Pvt Ltd **yes/no**) + GSTIN + FSSAI text  
+9. **D17** — Target soft-launch week  
 
-| Item | Why | Owner |
-|------|-----|--------|
-| **Google Play Console** developer account | Publish customer + rider Android apps | Founder / Tech |
-| **Apple Developer Program** | Publish customer iOS app | Founder / Tech |
-| App privacy questionnaire answers | Store listing compliance | Align with Legal (D15) |
+### Priority B — before real money / public users
 
-### Domains & email (small but easy to forget)
+10. **D05 / D06** — Rider model + pay rules  
+11. **D10** — Support hours + named escalation owners + WhatsApp/phone numbers  
+12. **D11** — Peak orders and rider count  
+13. **D18** — Google Play + Apple Developer accounts  
+14. **D20** — Invoice / tax details  
+15. **D23** — Packaging / seal checklist SOP  
+16. **D25** — Vendor billing owner  
+17. **Sandbox API keys** (see section 6)
 
-| Item | Why |
+### Priority C — can follow shortly after coding starts
+
+18. **D19** Domains · **D21** test phones · **D22** languages · **D24** hosting choice  
+
+---
+
+## 6. Accounts & API keys checklist
+
+Prefer **sandbox/test** first. Share via password manager — **never commit secrets to git**.
+
+| Vendor (proposed) | Purpose | Create now? | What to send |
+|-------------------|---------|-------------|--------------|
+| **Razorpay** | Prepaid UPI/cards/refunds | Yes (sandbox) | Key ID, key secret, webhook secret |
+| **Google Maps Platform** | Geocoding, zones, ETA, navigation handoff | Yes (restricted key) | API key + enabled APIs list |
+| **MSG91** | Login OTP + critical SMS | Yes | Auth key, sender ID, DLT template IDs |
+| **Firebase** | FCM push, Crashlytics, Analytics, Remote Config | Yes | Project + service account / config files |
+| **Exotel** | Masked customer↔rider calls | Soon | SID / API credentials |
+| **Meta WhatsApp Cloud API** | Transactional WhatsApp | Soon | WABA, phone number ID, templates |
+| **Cloud host** (TBD) | Staging API + DB + Redis | Before leaving local docker | Project access + billing owner |
+| **Object storage** (S3/GCS/R2) | Menu + evidence images | When images go live | Bucket + staging keys |
+| **Google Play Console** | Customer + rider Android | Before store upload | Account access |
+| **Apple Developer** | Customer iOS | Before iOS TestFlight | Account access |
+
+**Already decided commercially for pilot:** prepaid only (no COD).
+
+---
+
+## 7. What engineering should do next
+
+Recommended sequence:
+
+1. **You** close Priority A gaps in `REQUIRED_DECISIONS.txt` (or reply; we paste them in).  
+2. **Engineering** may start **Phase 01** immediately (create sibling repos, docker, health checks) using mocks — does not need every answer.  
+3. As soon as D01–D04 / D07 exist, seed real Mira Road zone + menu instead of placeholders.  
+4. When Razorpay + MSG91 + Maps sandbox keys arrive, wire them in Phases 02 / 04 / 05.  
+5. Continue phase-by-phase via `START_IMPLEMENTATION.txt` with multi-task mode on.
+
+**Your next step as stakeholder:** fill Priority A (especially kitchen pin, hours, priced menu, capacity, logo, legal entity confirmation, launch week).  
+**Engineering next step:** begin Phase 01 foundation once you say go (or after Priority A returns).
+
+---
+
+## 8. How to send answers
+
+Option 1 — Edit `REQUIRED_DECISIONS.txt` and push / send the file.  
+Option 2 — Reply in chat/email using the same D01…D25 IDs; we will update the repo.
+
+For secrets: 1Password / Bitwarden shared vault labeled `DAIG-STAGING` (not WhatsApp plain text).
+
+---
+
+## 9. Files
+
+| File | Use |
 |------|-----|
-| Domain for API / admin (e.g. `api.daig…`, `ops.daig…`) | Staging + production URLs |
-| Transactional email (optional early) | Invoices / passwordless admin if used |
-| Support phone / email for grievance contact | Shown in app (CUS-055 / D10 / D15) |
-
----
-
-## 6. What engineering can do **without** waiting forever
-
-If you want coding to start while decisions finish:
-
-| Can start with mocks | Still need from you soon |
-|----------------------|---------------------------|
-| Phase 01: create empty repos, docker Postgres/Redis, health checks | Nothing critical |
-| Phase 02: OTP login with **test OTP** (e.g. fixed code in staging) | Real SMS vendor before public users |
-| Phase 03–04: catalogue/cart with **sample menu & fake zone** | Real D01–D04 before pilot data |
-| Payments UI with **mock gateway** | Real Razorpay (or chosen) sandbox before money tests |
-
-**Recommended minimum to unblock “serious” build (Phases 03–05):**  
-D01 geography · D02 order modes · D03 menu · D04 capacity · D07 fees · D08 COD yes/no · D12 brand (or “placeholders OK”) · D14 payment + SMS + maps vendor **names** (keys can follow 1–2 weeks later as sandbox).
-
----
-
-## 7. Suggested vendor shortlist (India-friendly — pick, don’t invent)
-
-These are common choices; final pick is yours (D14):
-
-| Need | Common options |
-|------|----------------|
-| Payments | Razorpay, Cashfree, PayU |
-| SMS / OTP | MSG91, Twilio, Kaleyra, Exotel |
-| Maps | Google Maps Platform, Mapbox |
-| Masked calls | Exotel, Twilio |
-| WhatsApp | Gupshup, AiSensy, Meta Cloud API via BSP |
-| Cloud | AWS, GCP, or simpler PaaS for staging |
-
----
-
-## 8. How work will proceed after you answer
-
-1. You fill **blockers** in `REQUIRED_DECISIONS.txt` (or send answers).  
-2. You create **sandbox** vendor accounts and share keys securely.  
-3. Engineering pastes `START_IMPLEMENTATION.txt` into Cursor (multi-task mode) and builds **Phase 01 → 12** using small task pages.  
-4. Each phase has automated/manual tests; Phase 12 is pilot acceptance sign-off.
-
-**12 phases (for orientation):**  
-Foundation → Auth → Catalogue/stock → Zones/cart → Orders/payments → Kitchen → Dispatch/rider → Tracking → Support/refunds → Finance/reports → Security → Pilot acceptance.
-
----
-
-## 9. Action checklist for the person reading this
-
-Please return the following (even as rough notes):
-
-### This week (highest priority)
-
-- [ ] Kitchen address + pilot delivery area (D01)  
-- [ ] Instant vs scheduled vs pickup (D02)  
-- [ ] Launch menu list with sizes (D03)  
-- [ ] Batch / 15-min capacity numbers (D04)  
-- [ ] Delivery fee + min order + tax approach (D07)  
-- [ ] COD on or off for pilot (D08) — recommend **off**  
-- [ ] Confirm payment + SMS + maps vendor preference (D14 names)  
-- [ ] Logo / brand pack **or** written “use placeholders” (D12)  
-
-### Next (before taking real money / public users)
-
-- [ ] Sandbox payment keys + webhook secret  
-- [ ] SMS OTP account + DLT templates  
-- [ ] Maps API key  
-- [ ] Firebase (and Apple Developer if iOS customer app in pilot)  
-- [ ] Cancel/refund rules + support hours (D09, D10)  
-- [ ] Legal entity, GST, FSSAI text, Terms/Privacy owner (D15)  
-- [ ] Rider employment model + pay rules (D05, D06)  
-
-### Secure sharing
-
-- [ ] Prefer 1Password / Bitwarden / sealed note — **not** WhatsApp plain text for live secrets  
-- [ ] Label keys as `STAGING` vs `PRODUCTION`  
-- [ ] Name one owner for vendor billing (cards get charged for SMS/maps)
-
----
-
-## 10. Files to open if you want detail
-
-| File | For whom |
-|------|----------|
-| `STAKEHOLDER_BRIEF.md` (this file) | Everyone |
-| `REQUIRED_DECISIONS.txt` | Fill answers here |
+| `STAKEHOLDER_BRIEF.md` | This overview |
+| `REQUIRED_DECISIONS.txt` | Detailed answers + still-needed lists |
 | `DAIG_Haleem_Product_Requirements.docx` | Full product rules |
-| `README.md` | How the build system works |
-| `START_IMPLEMENTATION.txt` | Engineers — start autonomous build |
-| `implementation-phase/00-INDEX.md` | Phase map |
-| `implementation-phase/ESSENTIAL-TEST-MATRIX.md` | Launch test bar |
+| `START_IMPLEMENTATION.txt` | Engineer start prompt |
+| `implementation-phase/00-INDEX.md` | Build phases |
 
 ---
 
-## 11. Sign-off
+## 10. Sign-off
 
-I have read this brief and will provide the “This week” items by: _______________
+I will return Priority A answers by: _______________
 
 **Name:** _______________________  
 **Role:** _______________________  

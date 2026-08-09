@@ -1,11 +1,16 @@
 DAIG HALEEM — REQUIRED DECISIONS
 ================================
-Fill every field before autonomous implementation advances past Phase 01.
-Items marked [BLOCKER] must be answered. Items marked [CAN DEFER] may use the
-stated default until you decide.
+Fill every field before autonomous implementation advances past Phase 01
+for pilot-accurate data. Coding Phase 01 may start with mocks while
+PARTIAL / UNANSWERED items are closed.
 
-Status values: UNANSWERED | ANSWERED | DEFERRED
-Leave "Answer:" blank until filled. Change Status when done.
+Items marked [BLOCKER] must be answered for pilot launch.
+Items marked [CAN DEFER] may use the stated default until you decide.
+
+Status values: UNANSWERED | PARTIAL | ANSWERED | DEFERRED
+Leave remaining gaps clearly inside Answer. Change Status when done.
+
+Last updated: 9 August 2026 (stakeholder pass 1)
 
 ---------------------------------------------------------------------------
 D01 — Launch geography                                    [BLOCKER]
@@ -13,8 +18,15 @@ D01 — Launch geography                                    [BLOCKER]
 Question: Exact kitchen location (address + lat/lng), delivery polygon or
 radius, and expected address patterns for the pilot zone.
 Owner: Founder/Ops
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Pilot city: Mira Road, Maharashtra. Exact kitchen address,
+latitude/longitude and delivery radius/polygon still required.
+
+Still needed:
+- Full kitchen postal address
+- Latitude and longitude
+- Delivery radius (km) OR polygon coordinates / area list
+- Example pin codes or localities inside the pilot zone
 
 
 ---------------------------------------------------------------------------
@@ -24,8 +36,16 @@ Question: Which modes at pilot? (instant / scheduled slots / preorder-only
 days / pickup). Which days/hours for each?
 Owner: Founder/Ops
 Default if deferred: instant + scheduled slots; pickup off.
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Instant ordering plus scheduled delivery slots. Limited instant
+inventory will be released from available batches. Preorders allowed for
+future slots. Pickup disabled during MVP. Exact operating days and hours
+still need confirmation.
+
+Still needed:
+- Operating days (e.g. Fri–Sun only vs daily)
+- Kitchen open / last-order times
+- Slot length (e.g. 30 or 60 minutes) and cutoff before each slot
 
 
 ---------------------------------------------------------------------------
@@ -34,8 +54,19 @@ D03 — Menu                                                [BLOCKER]
 Question: Launch products, serving sizes/weights, add-ons, combos, stock
 unit, allergens, and portion claims that may appear in the app.
 Owner: Culinary/Ops
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Proposed structure: regular haleem, butter haleem, special
+dry-fruit haleem, 500 g pack and 1 kg family pack. Add-ons and final
+weights, prices, ingredients, allergens and portion claims require
+Culinary/Ops confirmation.
+
+Still needed:
+- Final SKU list and display names
+- Confirmed weights / serving labels
+- Prices (incl. tax treatment)
+- Add-ons (e.g. fried onions, lemon, bone pieces) with prices
+- Ingredients, allergens, spice level options if any
+- Packaging claims that may appear in-app
 
 
 ---------------------------------------------------------------------------
@@ -47,6 +78,12 @@ Owner: Kitchen
 Status: UNANSWERED
 Answer:
 
+Still needed:
+- Typical batch size (kg or portions) per product
+- Max orders accepted per 15 minutes (prep)
+- Max packs completed per 15 minutes
+- Lead time from accept → packed for instant vs slot orders
+
 
 ---------------------------------------------------------------------------
 D05 — Delivery workforce                                  [BLOCKER]
@@ -57,15 +94,28 @@ Owner: Founder/Legal/Ops
 Status: UNANSWERED
 Answer:
 
+Still needed:
+- Employment model (employee / contractor / vendor / hybrid)
+- Shift-based vs flexible go-online
+- Expected rider count at pilot launch
+- Who owns vehicle / fuel / phone
+
 
 ---------------------------------------------------------------------------
 D06 — Rider pay                                           [BLOCKER]
 ---------------------------------------------------------------------------
-Question: Base, distance, wait, surge, tips handling, COD rules (if any),
+Question: Base, distance, wait, surge, tips, COD rules (if any),
 payout frequency and method.
 Owner: Finance/Ops
 Status: UNANSWERED
 Answer:
+
+Still needed:
+- Base pay per order
+- Distance / wait / surge components
+- Tip pass-through policy (recommend 100% to rider)
+- Payout frequency (daily / weekly) and method (UPI / bank)
+- Any deductions or joining incentives
 
 
 ---------------------------------------------------------------------------
@@ -74,8 +124,16 @@ D07 — Customer fees                                       [BLOCKER]
 Question: Delivery fee rules, packaging fee, minimum order, tax approach,
 free-delivery threshold (if any).
 Owner: Finance
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Proposed pilot: delivery charge calculated by distance/zone;
+packaging included in item price; no platform fee; free-delivery
+threshold and minimum order require Finance confirmation.
+
+Still needed:
+- Distance/zone fee table (or formula)
+- Minimum order value (₹)
+- Free-delivery threshold (₹) or "none"
+- GST display approach (inclusive vs broken out)
 
 
 ---------------------------------------------------------------------------
@@ -85,8 +143,10 @@ Question: Launch COD or not? If yes: zone/value/risk/cash limits.
 Pilot recommendation: prepaid default; COD off until reliability proven.
 Owner: Finance/Ops
 Default if deferred: COD disabled (feature flag off).
-Status: UNANSWERED
-Answer:
+Status: ANSWERED
+Answer: COD disabled during the pilot. Prepaid payments only. COD remains
+behind an admin feature flag and may be activated after delivery and
+reconciliation reliability is proven.
 
 
 ---------------------------------------------------------------------------
@@ -95,8 +155,15 @@ D09 — Cancellation / refund policy                        [BLOCKER]
 Question: Stage-based cancel/refund rules and agent refund authority limits
 (with manager approval thresholds).
 Owner: Founder/Support/Legal
-Status: UNANSWERED
-Answer:
+Status: ANSWERED
+Answer: Full cancellation and original-method refund before kitchen
+acceptance. After acceptance but before preparation, cancellation may be
+approved by support. Once preparation begins, customer-requested
+cancellation is normally non-refundable. DAIG-caused rejection, duplicate
+payment, non-delivery, wrong order or confirmed food-safety failure receives
+a full refund. Missing/damaged individual items receive an item-level
+refund. Support agents may approve up to ₹500 per order; amounts above ₹500
+require manager approval.
 
 
 ---------------------------------------------------------------------------
@@ -105,8 +172,17 @@ D10 — Support operations                                  [BLOCKER]
 Question: Hours, channels (in-app/chat/call/WhatsApp), response SLA, and
 escalation owners.
 Owner: Ops
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Proposed pilot channels: in-app support and WhatsApp, with phone
+escalation for active deliveries. Live-order target response: 5 minutes.
+Non-live issues: 2 business hours. Exact operating hours and named
+escalation owners are required.
+
+Still needed:
+- Support operating hours / days
+- Named WhatsApp number / business account
+- Phone escalation number
+- Named owners: L1 support, L2 manager, kitchen escalate, finance escalate
 
 
 ---------------------------------------------------------------------------
@@ -118,6 +194,12 @@ Owner: Founder/Ops
 Status: UNANSWERED
 Answer:
 
+Still needed:
+- Normal orders / 15 min
+- Peak orders / 15 min (e.g. Iftar / weekend evening)
+- Target active riders at peak
+- Soft launch daily order target for first 2 weeks
+
 
 ---------------------------------------------------------------------------
 D12 — Brand UX                                            [BLOCKER]
@@ -125,8 +207,19 @@ D12 — Brand UX                                            [BLOCKER]
 Question: Logo assets, colors, type, food photography direction, tone of
 voice. Paths to asset files if available.
 Owner: Brand/Design
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Premium traditional Hyderabadi identity. Primary palette: black,
+deep maroon and muted gold. Use bold, minimal typography and premium
+close-up food photography showing authentic slow-cooked haleem, traditional
+daig preparation and sealed delivery packaging. Tone: warm, confident,
+authentic and straightforward—never overly corporate or playful. Existing
+DAIG logo must be provided to the design repository.
+
+Still needed:
+- Logo files (SVG/PNG, light/dark if available)
+- Any existing brand guidelines PDF
+- Initial food photo set or photoshoot plan date
+- Confirm fonts (or allow design to propose within palette)
 
 
 ---------------------------------------------------------------------------
@@ -138,8 +231,9 @@ Confirmed plan default: Customer Flutter Android+iOS; Rider Android-first;
 no public customer web ordering in MVP.
 Owner: Product/Tech
 Status: ANSWERED
-Answer: Customer Flutter (Android+iOS). Rider Flutter Android-first; iOS
-optional later. No customer web ordering in MVP. Console is Next.js web.
+Answer: Customer Flutter app for Android and iOS. Rider Flutter app
+Android-first; iOS optional later. No public customer web ordering in MVP.
+Kitchen, dispatch and admin console built with Next.js.
 
 
 ---------------------------------------------------------------------------
@@ -149,8 +243,18 @@ Question: Payment gateway, maps/geocoding, OTP/SMS, masked calling/chat,
 WhatsApp (optional), analytics/crash tooling. Provide sandbox credentials
 location (never commit secrets).
 Owner: Tech/Finance
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Proposed stack: Razorpay for payments; Google Maps Platform for
+maps, geocoding and routes; MSG91 for OTP/SMS; Exotel for masked calling;
+Meta WhatsApp Cloud API for WhatsApp; Firebase Analytics, Crashlytics,
+Cloud Messaging and Remote Config. Credentials will be stored in local
+environment files and the deployment secret manager—never committed.
+Final vendor approval and account/credential locations are required.
+
+Still needed:
+- Written approval of this vendor set (or changes)
+- Sandbox account owners + where secrets will live (1Password vault name)
+- Razorpay / MSG91 / Google Maps / Firebase / Exotel staging keys when ready
 
 
 ---------------------------------------------------------------------------
@@ -159,8 +263,19 @@ D15 — Compliance                                          [BLOCKER]
 Question: Legal entity, GST/FSSAI display text, privacy/terms owners,
 rider contract model, data retention schedule.
 Owner: Legal/Finance
-Status: UNANSWERED
-Answer:
+Status: PARTIAL
+Answer: Proposed operating entity: Hashforgamers Private Limited only if
+DAIG will legally operate under the existing company; otherwise the correct
+legal entity must be supplied. GSTIN, FSSAI licence/display text, rider
+contract type, policy owner and retention schedule remain required.
+
+Still needed:
+- Confirm legal entity name (yes/no Hashforgamers Private Limited)
+- GSTIN
+- FSSAI licence number + display text
+- Terms / Privacy / Refund policy owner + draft approval date
+- Rider contract type (aligned with D05)
+- Data retention schedule (orders, GPS, chat, evidence photos)
 
 
 ---------------------------------------------------------------------------
@@ -173,6 +288,139 @@ Owner: Tech
 Status: ANSWERED
 Answer: Sibling folders under ~/Desktop/Projects/ as documented in
 implementation-phase/00-REPO-LAYOUT.md
+
+
+---------------------------------------------------------------------------
+D17 — Target pilot date                                   [BLOCKER]
+---------------------------------------------------------------------------
+Question: Target soft-launch week and hard deadline (if any). Who is the
+single decision owner for go/no-go?
+Owner: Founder
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Soft launch target week
+- Public launch target (if different)
+- Go/no-go owner name
+
+
+---------------------------------------------------------------------------
+D18 — Store & developer accounts                          [BLOCKER]
+---------------------------------------------------------------------------
+Question: Who owns Google Play Console and Apple Developer accounts for
+DAIG apps? Are accounts already created?
+Owner: Founder/Tech
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Google Play account email / status
+- Apple Developer account email / status
+- Bundle ID / package name preferences (or allow tech defaults:
+  e.g. com.daig.customer / com.daig.rider)
+
+
+---------------------------------------------------------------------------
+D19 — Domains & public URLs                               [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Domains for API, ops console, marketing site (if any), and
+support links.
+Owner: Founder/Tech
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Root domain (existing or new)
+- Preferred staging hosts (e.g. api-staging…, ops-staging…)
+- Support email + grievance email to show in app
+
+
+---------------------------------------------------------------------------
+D20 — Tax invoice details                                 [BLOCKER]
+---------------------------------------------------------------------------
+Question: Legal name, address, GSTIN, place of supply rules, and whether
+prices are tax-inclusive on menu.
+Owner: Finance
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Invoice legal name + address
+- HSN/SAC approach for haleem / delivery fee
+- Tax-inclusive menu prices? (yes/no)
+
+
+---------------------------------------------------------------------------
+D21 — Pilot test users                                    [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Real phone numbers allowed for staging OTP tests (internal team
+only). Admin emails/phones for first console accounts.
+Owner: Ops/Tech
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- 3–5 internal tester phone numbers
+- First super-admin phone/email
+- Kitchen operator and dispatcher test accounts
+
+
+---------------------------------------------------------------------------
+D22 — Languages                                           [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Customer and rider languages at pilot (PRD default English + Hindi).
+Owner: Product/Ops
+Status: PARTIAL
+Answer: Default assumed English + Hindi for customer and rider apps unless
+changed.
+
+Still needed:
+- Confirm or list additional local language for Mira Road riders/customers
+
+
+---------------------------------------------------------------------------
+D23 — Food packaging / quality SOP                        [BLOCKER]
+---------------------------------------------------------------------------
+Question: Spill-proof packaging standard, seal checklist items, temperature
+handling notes that apps must enforce at pack/pickup.
+Owner: Culinary/Ops/Food-safety
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Pack checklist items (lid lock, outer bag, upright, cutlery, etc.)
+- Whether temperature check is recorded in app at pilot (yes/no)
+- Any allergen cross-contact warnings for UI
+
+
+---------------------------------------------------------------------------
+D24 — Cloud hosting preference                            [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Preferred cloud for staging/production (AWS, GCP, or managed PaaS).
+Who pays the bill?
+Owner: Tech/Finance
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Hosting preference
+- Billing owner
+- Region preference (recommend ap-south-1 / Asia South)
+
+
+---------------------------------------------------------------------------
+D25 — Vendor billing owner                                [BLOCKER]
+---------------------------------------------------------------------------
+Question: Who owns the credit card / billing for Razorpay fees, Google Maps,
+MSG91, Firebase, Exotel, WhatsApp, and Apple/Google developer fees?
+Owner: Finance
+Status: UNANSWERED
+Answer:
+
+Still needed:
+- Named billing owner for each vendor (or one owner for all)
+- Monthly budget soft cap for staging usage
 
 
 ---------------------------------------------------------------------------
