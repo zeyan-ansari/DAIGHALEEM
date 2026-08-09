@@ -1,0 +1,64 @@
+You are implementing DAIG Haleem using the modular phase system in this platform repo.
+
+MULTI-TASK MODE: Keep multi-task mode ON. Split independent work across parallel
+agents/workers. Prefer one worker per independent task page, especially when
+tasks target different sibling repos.
+
+================================================================
+HARD RULES
+================================================================
+1. Do NOT edit the plan file under .cursor/plans (if present).
+2. Read REQUIRED_DECISIONS.txt first. If any [BLOCKER] has Status UNANSWERED,
+   STOP and list those decisions for the user. Do not invent production vendor
+   credentials. You MAY proceed with documented defaults only for items marked
+   [CAN DEFER] or Status ANSWERED/DEFERRED.
+3. Read implementation-phase/00-INDEX.md and implementation-phase/00-EXECUTION-RULES.md.
+4. Find the first phase folder whose STATUS.md is not fully complete.
+5. Implement ONLY that phase's unchecked task pages, in dependency order.
+6. Each task page is one focused change set. Do not merge multiple task pages
+   into a giant rewrite unless they are trivial and in the same repo.
+7. Application code belongs in sibling repos (daig-backend, daig-customer-app,
+   daig-rider-app, daig-web-console), not inside this platform repo except
+   contracts/ and implementation-phase docs.
+8. Treat contracts/ as API source of truth. Update contracts before breaking
+   API changes, then implement consumers.
+9. No marketplace / multi-restaurant features. No Zomato/Swiggy copy.
+10. COD, loyalty, referrals, rider batching stay feature-flagged off unless
+    REQUIRED_DECISIONS.txt explicitly enables them.
+11. After finishing task pages, run that phase's TESTS.md. Do not mark the
+    phase complete until tests pass (or a failure is fixed).
+12. Update the phase STATUS.md checkboxes as you complete tasks.
+13. When the phase is complete, open NEXT.md and either continue into the next
+    phase in the same session if context allows, or stop with a clear paste
+    prompt for the next chat that includes the next phase path.
+14. From Phase 05 onward, also run
+    implementation-phase/ESSENTIAL-TEST-MATRIX.md regression items marked
+    required-for-this-phase.
+15. Commit only if the user asks. Never push unless asked.
+16. Never commit secrets. Use .env.example only.
+
+================================================================
+EXECUTION LOOP
+================================================================
+A. Open the current phase README.md and STATUS.md.
+B. Select the next unchecked task with dependencies satisfied.
+C. If multiple unchecked tasks have no unmet deps and target different repos,
+   launch them in parallel (multi-task).
+D. Follow the task page Steps exactly; honor DoNot.
+E. Satisfy Acceptance checkboxes; run the Tests command/section on the page.
+F. Mark the task done in STATUS.md.
+G. Repeat B–F until all phase tasks are done.
+H. Run TESTS.md for the phase (+ ESSENTIAL-TEST-MATRIX.md if Phase >= 05).
+I. Mark phase complete in STATUS.md.
+J. Follow NEXT.md.
+
+================================================================
+START NOW
+================================================================
+Workspace platform root: the DAIGHALEEM repo containing this file.
+Sibling repos: see implementation-phase/00-REPO-LAYOUT.md.
+
+1) Read REQUIRED_DECISIONS.txt and gate on blockers.
+2) Read implementation-phase/00-INDEX.md.
+3) Locate the first incomplete phase.
+4) Begin implementing its next incomplete task pages.

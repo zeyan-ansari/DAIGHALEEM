@@ -1,0 +1,184 @@
+DAIG HALEEM — REQUIRED DECISIONS
+================================
+Fill every field before autonomous implementation advances past Phase 01.
+Items marked [BLOCKER] must be answered. Items marked [CAN DEFER] may use the
+stated default until you decide.
+
+Status values: UNANSWERED | ANSWERED | DEFERRED
+Leave "Answer:" blank until filled. Change Status when done.
+
+---------------------------------------------------------------------------
+D01 — Launch geography                                    [BLOCKER]
+---------------------------------------------------------------------------
+Question: Exact kitchen location (address + lat/lng), delivery polygon or
+radius, and expected address patterns for the pilot zone.
+Owner: Founder/Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D02 — Order model                                         [BLOCKER]
+---------------------------------------------------------------------------
+Question: Which modes at pilot? (instant / scheduled slots / preorder-only
+days / pickup). Which days/hours for each?
+Owner: Founder/Ops
+Default if deferred: instant + scheduled slots; pickup off.
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D03 — Menu                                                [BLOCKER]
+---------------------------------------------------------------------------
+Question: Launch products, serving sizes/weights, add-ons, combos, stock
+unit, allergens, and portion claims that may appear in the app.
+Owner: Culinary/Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D04 — Capacity                                            [BLOCKER]
+---------------------------------------------------------------------------
+Question: Portions per batch; preparation and packing ceilings per
+15-minute interval for the pilot kitchen.
+Owner: Kitchen
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D05 — Delivery workforce                                  [BLOCKER]
+---------------------------------------------------------------------------
+Question: Employees, contractors, fleet vendor, or hybrid? Shifts vs
+go-online model?
+Owner: Founder/Legal/Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D06 — Rider pay                                           [BLOCKER]
+---------------------------------------------------------------------------
+Question: Base, distance, wait, surge, tips handling, COD rules (if any),
+payout frequency and method.
+Owner: Finance/Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D07 — Customer fees                                       [BLOCKER]
+---------------------------------------------------------------------------
+Question: Delivery fee rules, packaging fee, minimum order, tax approach,
+free-delivery threshold (if any).
+Owner: Finance
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D08 — COD                                                 [BLOCKER]
+---------------------------------------------------------------------------
+Question: Launch COD or not? If yes: zone/value/risk/cash limits.
+Pilot recommendation: prepaid default; COD off until reliability proven.
+Owner: Finance/Ops
+Default if deferred: COD disabled (feature flag off).
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D09 — Cancellation / refund policy                        [BLOCKER]
+---------------------------------------------------------------------------
+Question: Stage-based cancel/refund rules and agent refund authority limits
+(with manager approval thresholds).
+Owner: Founder/Support/Legal
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D10 — Support operations                                  [BLOCKER]
+---------------------------------------------------------------------------
+Question: Hours, channels (in-app/chat/call/WhatsApp), response SLA, and
+escalation owners.
+Owner: Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D11 — Peak forecast                                       [BLOCKER]
+---------------------------------------------------------------------------
+Question: Expected normal and peak orders per 15 minutes; expected active
+riders for pilot.
+Owner: Founder/Ops
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D12 — Brand UX                                            [BLOCKER]
+---------------------------------------------------------------------------
+Question: Logo assets, colors, type, food photography direction, tone of
+voice. Paths to asset files if available.
+Owner: Brand/Design
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D13 — Platforms                                           [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Customer Android+iOS together at pilot? Rider Android-only?
+Customer web ordering?
+Confirmed plan default: Customer Flutter Android+iOS; Rider Android-first;
+no public customer web ordering in MVP.
+Owner: Product/Tech
+Status: ANSWERED
+Answer: Customer Flutter (Android+iOS). Rider Flutter Android-first; iOS
+optional later. No customer web ordering in MVP. Console is Next.js web.
+
+
+---------------------------------------------------------------------------
+D14 — Vendors                                             [BLOCKER]
+---------------------------------------------------------------------------
+Question: Payment gateway, maps/geocoding, OTP/SMS, masked calling/chat,
+WhatsApp (optional), analytics/crash tooling. Provide sandbox credentials
+location (never commit secrets).
+Owner: Tech/Finance
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D15 — Compliance                                          [BLOCKER]
+---------------------------------------------------------------------------
+Question: Legal entity, GST/FSSAI display text, privacy/terms owners,
+rider contract model, data retention schedule.
+Owner: Legal/Finance
+Status: UNANSWERED
+Answer:
+
+
+---------------------------------------------------------------------------
+D16 — Sibling repo paths                                  [CAN DEFER]
+---------------------------------------------------------------------------
+Question: Absolute or relative paths where app repos will live.
+Default: ~/Desktop/Projects/daig-backend, daig-customer-app,
+daig-rider-app, daig-web-console next to this DAIGHALEEM folder.
+Owner: Tech
+Status: ANSWERED
+Answer: Sibling folders under ~/Desktop/Projects/ as documented in
+implementation-phase/00-REPO-LAYOUT.md
+
+
+---------------------------------------------------------------------------
+SIGN-OFF
+---------------------------------------------------------------------------
+I confirm [BLOCKER] items are filled or explicitly deferred with defaults:
+Name:
+Date:
+Notes:

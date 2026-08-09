@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://daig.local/schemas/order-states.json",
+  "title": "DAIG Order States",
+  "description": "Canonical order states from PRD §6.2. Only server-approved transitions are valid (ORD-001).",
+  "type": "string",
+  "enum": [
+    "cart",
+    "payment_pending",
+    "confirmed",
+    "accepted",
+    "preparing",
+    "packed",
+    "rider_assigned",
+    "picked_up",
+    "delivered",
+    "cancelled",
+    "delivery_failed",
+    "refund_pending",
+    "refunded"
+  ],
+  "transitions": {
+    "cart": ["payment_pending", "cancelled"],
+    "payment_pending": ["confirmed", "cancelled", "refund_pending"],
+    "confirmed": ["accepted", "cancelled", "refund_pending"],
+    "accepted": ["preparing", "cancelled", "refund_pending"],
+    "preparing": ["packed", "cancelled", "refund_pending"],
+    "packed": ["rider_assigned", "cancelled", "refund_pending"],
+    "rider_assigned": ["picked_up", "packed", "cancelled", "delivery_failed"],
+    "picked_up": ["delivered", "delivery_failed"],
+    "delivered": ["refund_pending"],
+    "cancelled": ["refund_pending", "refunded"],
+    "delivery_failed": ["refund_pending", "refunded"],
+    "refund_pending": ["refunded"],
+    "refunded": []
+  },
+  "terminal": ["delivered", "cancelled", "delivery_failed", "refunded"],
+  "notes": [
+    "Terminal states are immutable except controlled support/finance sub-states (ORD-003).",
+    "refund_pending/refunded may overlap as finance sub-states after cancellation or delivery issues.",
+    "Every transition stores actor, timestamp, source, reason, metadata, correlation ID (ORD-002)."
+  ]
+}

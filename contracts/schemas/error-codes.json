@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://daig.local/schemas/error-codes.json",
+  "title": "DAIG Structured Error Codes",
+  "description": "Safe client-facing codes (API-002). Expand per phase; never leak internals.",
+  "type": "object",
+  "required": ["code", "message", "requestId"],
+  "properties": {
+    "code": {
+      "type": "string",
+      "enum": [
+        "AUTH_OTP_INVALID",
+        "AUTH_OTP_RATE_LIMITED",
+        "AUTH_SESSION_REVOKED",
+        "AUTH_FORBIDDEN",
+        "SERVICEABILITY_OUT_OF_ZONE",
+        "CATALOGUE_SOLD_OUT",
+        "CATALOGUE_STALE_PRICE",
+        "CART_VALIDATION_FAILED",
+        "SLOT_FULL",
+        "OUTLET_CLOSED",
+        "ORDER_IDEMPOTENCY_CONFLICT",
+        "ORDER_INVALID_TRANSITION",
+        "PAYMENT_FAILED",
+        "PAYMENT_PENDING",
+        "PAYMENT_WEBHOOK_INVALID",
+        "CAPACITY_EXCEEDED",
+        "ASSIGNMENT_CONFLICT",
+        "DELIVERY_OTP_INVALID",
+        "REFUND_LIMIT_EXCEEDED",
+        "VALIDATION_ERROR",
+        "NOT_FOUND",
+        "CONFLICT",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "message": { "type": "string" },
+    "requestId": { "type": "string" },
+    "details": { "type": "object", "additionalProperties": true }
+  }
+}

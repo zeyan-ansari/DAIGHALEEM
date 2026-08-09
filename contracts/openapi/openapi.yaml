@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: DAIG Haleem API
+  version: 0.1.0
+  description: |
+    Skeleton OpenAPI for DAIG Haleem. Domains expand phase by phase.
+    Clients never hold privileged secrets or make authoritative price/state decisions.
+servers:
+  - url: https://api.daig.local/v1
+    description: Local/staging placeholder
+tags:
+  - name: auth
+  - name: users
+  - name: addresses
+  - name: devices
+  - name: outlets
+  - name: serviceability
+  - name: catalogue
+  - name: availability
+  - name: slots
+  - name: carts
+  - name: pricing
+  - name: promotions
+  - name: orders
+  - name: invoices
+  - name: payments
+  - name: refunds
+  - name: webhooks
+  - name: riders
+  - name: assignments
+  - name: deliveries
+  - name: location
+  - name: earnings
+  - name: kitchen
+  - name: capacity
+  - name: dispatch
+  - name: support
+  - name: notifications
+  - name: admin
+  - name: reports
+paths:
+  /health:
+    get:
+      summary: Liveness/readiness
+      operationId: getHealth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /auth/otp/request:
+    post:
+      tags: [auth]
+      summary: Request OTP for Indian mobile number
+      operationId: requestOtp
+      x-phase: 2
+      responses:
+        "200":
+          description: OTP sent (or mock accepted)
+  /auth/otp/verify:
+    post:
+      tags: [auth]
+      summary: Verify OTP and create session
+      operationId: verifyOtp
+      x-phase: 2
+      responses:
+        "200":
+          description: Session issued
+  /serviceability:
+    post:
+      tags: [serviceability]
+      summary: Check address serviceability
+      operationId: checkServiceability
+      x-phase: 4
+      responses:
+        "200":
+          description: Deliverable or not with outlet/fees/ETA/slots
+  /catalogue/products:
+    get:
+      tags: [catalogue]
+      summary: List sellable products for outlet
+      operationId: listProducts
+      x-phase: 3
+      responses:
+        "200":
+          description: Product list
+  /carts/me:
+    get:
+      tags: [carts]
+      summary: Get persisted cart
+      operationId: getCart
+      x-phase: 4
+      responses:
+        "200":
+          description: Cart
+  /orders:
+    post:
+      tags: [orders]
+      summary: Create idempotent order
+      operationId: createOrder
+      x-phase: 5
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Order created
+  /payments/webhooks/{provider}:
+    post:
+      tags: [webhooks]
+      summary: Payment provider webhook
+      operationId: paymentWebhook
+      x-phase: 5
+      responses:
+        "200":
+          description: Accepted
+  /kitchen/orders:
+    get:
+      tags: [kitchen]
+      summary: Kitchen queue
+      operationId: listKitchenOrders
+      x-phase: 6
+      responses:
+        "200":
+          description: Queue
+  /dispatch/assignments:
+    post:
+      tags: [dispatch]
+      summary: Assign or reassign rider
+      operationId: assignRider
+      x-phase: 7
+      responses:
+        "200":
+          description: Assignment result
+  /riders/me/availability:
+    post:
+      tags: [riders]
+      summary: Go online/offline
+      operationId: setRiderAvailability
+      x-phase: 7
+      responses:
+        "200":
+          description: Availability updated
+  /deliveries/{id}/location:
+    post:
+      tags: [location]
+      summary: Rider location sample
+      operationId: postDeliveryLocation
+      x-phase: 8
+      responses:
+        "202":
+          description: Accepted
+  /support/tickets:
+    post:
+      tags: [support]
+      summary: Create support ticket from order context
+      operationId: createSupportTicket
+      x-phase: 9
+      responses:
+        "201":
+          description: Ticket created
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      required: [code, message, requestId]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    OrderState:
+      type: string
+      enum:
+        - cart
+        - payment_pending
+        - confirmed
+        - accepted
+        - preparing
+        - packed
+        - rider_assigned
+        - picked_up
+        - delivered
+        - cancelled
+        - delivery_failed
+        - refund_pending
+        - refunded
+security:
+  - bearerAuth: []
