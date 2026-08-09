@@ -1,6 +1,6 @@
 # DAIG Haleem — Platform Orchestration
 
-This repository (`daig-platform`) holds product requirements, shared API contracts, and a **phase-based implementation system**. Application code lives in **separate sibling repos**.
+This repository (`DAIGHALEEM`) holds product requirements, shared API contracts, and a **phase-based implementation system**. Application code lives in **separate sibling repos**.
 
 ## Product
 
@@ -33,7 +33,7 @@ Details: [implementation-phase/00-REPO-LAYOUT.md](implementation-phase/00-REPO-L
 
 ## How to implement (autonomous)
 
-1. Fill every `[BLOCKER]` item in [REQUIRED_DECISIONS.txt](REQUIRED_DECISIONS.txt).
+1. Review [REQUIRED_DECISIONS.txt](REQUIRED_DECISIONS.txt). Phase 01 may use documented mocks; later phases are gated by [PHASE-DECISION-GATES.md](implementation-phase/PHASE-DECISION-GATES.md).
 2. Open a new Cursor chat with **multi-task mode on**.
 3. Paste the full contents of [START_IMPLEMENTATION.txt](START_IMPLEMENTATION.txt).
 4. The agent works the first incomplete phase using small task pages under `implementation-phase/`.
@@ -62,6 +62,8 @@ See [implementation-phase/00-INDEX.md](implementation-phase/00-INDEX.md).
 ## Contracts
 
 Shared OpenAPI and enums live in [contracts/](contracts/). All app repos must treat these as the API source of truth.
+
+Architecture decisions live in [`docs/adr/`](docs/adr/). Run `python3 scripts/validate_repo.py` before publishing orchestration or contract changes.
 
 ## Pilot cut
 

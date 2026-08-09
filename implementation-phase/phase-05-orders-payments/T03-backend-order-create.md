@@ -6,7 +6,9 @@
 
 ## Goal
 
-Validate cart server-side; reserve stock/capacity; create payment_pending or confirmed for COD if enabled.
+Validate cart server-side; reserve stock/capacity; create an order aggregate with
+`paymentStatus=pending`. Set `orderStatus=confirmed` only after captured payment
+or approved COD. Payment lifecycle must not be stored in `orderStatus`.
 
 ## Steps
 

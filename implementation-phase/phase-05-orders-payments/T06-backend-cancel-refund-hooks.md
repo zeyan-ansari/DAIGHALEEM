@@ -6,7 +6,9 @@
 
 ## Goal
 
-Customer cancel before accept; release reservations; refund_pending on paid cancel; separate decision vs gateway status.
+Customer cancel before accept; release reservations; set fulfilment to cancelled
+and independently set `refundStatus=requested/processing` for a paid cancellation.
+The refund lifecycle must never replace the fulfilment status.
 
 ## Steps
 
@@ -16,7 +18,7 @@ Customer cancel before accept; release reservations; refund_pending on paid canc
 
 ## Acceptance
 
-- [ ] Paid cancel creates refund_pending
+- [ ] Paid cancel preserves `orderStatus=cancelled` and creates a separate refund lifecycle
 
 ## Tests
 

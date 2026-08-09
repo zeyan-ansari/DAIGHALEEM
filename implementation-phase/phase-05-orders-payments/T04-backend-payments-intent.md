@@ -17,7 +17,7 @@ Create payment intent via provider port; sandbox/mock adapter; retry without new
 
 ## Acceptance
 
-- [ ] Failure keeps order payment_pending until expiry policy
+- [ ] Failure keeps `paymentStatus=pending` until expiry policy; fulfilment status is unchanged
 
 ## Tests
 

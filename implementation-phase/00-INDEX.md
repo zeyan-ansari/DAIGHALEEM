@@ -4,7 +4,7 @@ Use this file to find the current phase. Work **one phase at a time**. Mark task
 
 ## How to start
 
-1. Fill [REQUIRED_DECISIONS.txt](../REQUIRED_DECISIONS.txt) blockers.
+1. Review [REQUIRED_DECISIONS.txt](../REQUIRED_DECISIONS.txt) and apply the current phase's [decision gate](PHASE-DECISION-GATES.md). Phase 01 may start with mocks.
 2. Paste [START_IMPLEMENTATION.txt](../START_IMPLEMENTATION.txt) with multi-task mode on.
 3. Follow [00-EXECUTION-RULES.md](00-EXECUTION-RULES.md).
 4. Sibling paths: [00-REPO-LAYOUT.md](00-REPO-LAYOUT.md).

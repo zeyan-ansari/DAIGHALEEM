@@ -11,7 +11,7 @@ ORD-004 scheduler releases stock on payment expiry safely/idempotently.
 ## Steps
 
 1. BullMQ job
-2. Expire payment_pending
+2. Expire aggregates whose `paymentStatus=pending` reservation hold elapsed
 3. Release reservations once
 
 ## Acceptance

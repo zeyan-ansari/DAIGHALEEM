@@ -120,7 +120,7 @@ Answer these even as rough numbers; engineering can start scaffolding in paralle
 
 ## 6. Accounts & API keys checklist
 
-Prefer **sandbox/test** first. Share via password manager — **never commit secrets to git**.
+Prefer **sandbox/test** first. Share through the approved secret manager — **never commit secrets to git**.
 
 | Vendor (proposed) | Purpose | Create now? | What to send |
 |-------------------|---------|-------------|--------------|
@@ -159,7 +159,7 @@ Recommended sequence:
 Option 1 — Edit `REQUIRED_DECISIONS.txt` and push / send the file.  
 Option 2 — Reply in chat/email using the same D01…D25 IDs; we will update the repo.
 
-For secrets: 1Password / Bitwarden shared vault labeled `DAIG-STAGING` (not WhatsApp plain text).
+For secrets: use the approved shared secret manager (not WhatsApp, email, or committed files).
 
 ---
 

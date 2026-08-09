@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://daig.local/schemas/assignment-states.json",
+  "title": "DAIG Assignment Status",
+  "type": "string",
+  "enum": ["unassigned", "offered", "accepted", "arrived", "picked_up", "completed", "cancelled"]
+}

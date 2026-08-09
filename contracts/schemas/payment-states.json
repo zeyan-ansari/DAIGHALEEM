@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://daig.local/schemas/payment-states.json",
+  "title": "DAIG Payment Status",
+  "type": "string",
+  "enum": ["pending", "authorized", "captured", "failed", "cancelled"]
+}
