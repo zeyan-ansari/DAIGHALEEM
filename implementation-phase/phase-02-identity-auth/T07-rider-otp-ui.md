@@ -16,7 +16,7 @@ Rider login via OTP; language preference field placeholder.
 
 ## Acceptance
 
-- [ ] Rider can obtain session
+- [x] Rider can obtain session
 
 ## Tests
 

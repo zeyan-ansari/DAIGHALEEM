@@ -17,8 +17,8 @@ Implement OTP flow with mock SMS provider and fixed/test OTP in non-prod.
 
 ## Acceptance
 
-- [ ] request+verify works in e2e
-- [ ] Rate limit returns AUTH_OTP_RATE_LIMITED
+- [x] request+verify works in e2e
+- [x] Rate limit returns AUTH_OTP_RATE_LIMITED
 
 ## Tests
 

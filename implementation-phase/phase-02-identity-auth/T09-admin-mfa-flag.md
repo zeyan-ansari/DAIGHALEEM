@@ -16,7 +16,7 @@ Persist mfaEnabled/required on admin users; block console if required unmet (stu
 
 ## Acceptance
 
-- [ ] Admin with mfaRequired and not verified cannot access admin APIs
+- [x] Admin with mfaRequired and not verified cannot access admin APIs
 
 ## Tests
 

@@ -17,8 +17,8 @@ Browse-first: home accessible; login required only for gated actions.
 
 ## Acceptance
 
-- [ ] User can login with mock OTP
-- [ ] Browse without login works
+- [x] User can login with mock OTP
+- [x] Browse without login works
 
 ## Tests
 

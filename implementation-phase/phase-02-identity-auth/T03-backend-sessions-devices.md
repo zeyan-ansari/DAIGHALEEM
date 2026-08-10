@@ -17,7 +17,7 @@ Persist sessions/devices; support revoke.
 
 ## Acceptance
 
-- [ ] Revoked session cannot call protected route
+- [x] Revoked session cannot call protected route
 
 ## Tests
 

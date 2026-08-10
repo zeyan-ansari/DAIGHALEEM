@@ -4,15 +4,15 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] OTP request rate limited
-- [ ] Invalid OTP rejected
-- [ ] Session revoke blocks subsequent calls
-- [ ] Role without permission receives AUTH_FORBIDDEN
-- [ ] Customer browse endpoints work without auth where required
+- [x] OTP request rate limited
+- [x] Invalid OTP rejected
+- [x] Session revoke blocks subsequent calls
+- [x] Role without permission receives AUTH_FORBIDDEN
+- [x] Customer browse endpoints work without auth where required
 
 ## Manual / field
 
-- [ ] Admin MFA flag visible in user record even if provider stubbed
+- [x] Admin MFA flag visible in user record even if provider stubbed
 
 ## Commands (adjust to repo scripts)
 

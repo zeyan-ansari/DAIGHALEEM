@@ -62,9 +62,31 @@ paths:
       summary: Request OTP for Indian mobile number
       operationId: requestOtp
       x-phase: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpRequest"
       responses:
         "200":
           description: OTP sent (or mock accepted)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpRequestResponse"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                rateLimited:
+                  value:
+                    code: AUTH_OTP_RATE_LIMITED
+                    message: Too many OTP requests
+                    requestId: req_example
   /auth/otp/verify:
     post:
       security: []
@@ -72,9 +94,207 @@ paths:
       summary: Verify OTP and create session
       operationId: verifyOtp
       x-phase: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpVerify"
       responses:
         "200":
           description: Session issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpVerifyResponse"
+        "401":
+          description: Invalid OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalid:
+                  value:
+                    code: AUTH_OTP_INVALID
+                    message: Invalid or expired OTP
+                    requestId: req_example
+  /auth/sessions/revoke:
+    post:
+      tags: [auth]
+      summary: Revoke current or specified session
+      operationId: revokeSession
+      x-phase: 2
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                  format: uuid
+      responses:
+        "204":
+          description: Revoked
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/me:
+    get:
+      tags: [users]
+      summary: Get current user profile
+      operationId: getCurrentUser
+      x-phase: 2
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      tags: [users]
+      summary: Update current user profile
+      operationId: patchCurrentUser
+      x-phase: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfilePatch"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags: [users]
+      summary: Schedule account deletion (stub OK for pilot)
+      operationId: deleteCurrentUser
+      x-phase: 2
+      responses:
+        "202":
+          description: Deletion scheduled
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /devices:
+    post:
+      tags: [devices]
+      summary: Register or refresh a device for push/session binding
+      operationId: registerDevice
+      x-phase: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceRegister"
+      responses:
+        "200":
+          description: Device registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /admin/roles:
+    get:
+      tags: [admin]
+      summary: List console roles and permissions
+      operationId: listAdminRoles
+      x-phase: 2
+      responses:
+        "200":
+          description: Roles
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [roles]
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AdminRole"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                forbidden:
+                  value:
+                    code: AUTH_FORBIDDEN
+                    message: Insufficient role
+                    requestId: req_example
+  /admin/users/{userId}/roles:
+    put:
+      tags: [admin]
+      summary: Set console roles for a user
+      operationId: setAdminUserRoles
+      x-phase: 2
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roles]
+              properties:
+                roles:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ConsoleRole"
+      responses:
+        "200":
+          description: Roles updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserRoles"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /serviceability:
     post:
       tags: [serviceability]
@@ -86,13 +306,218 @@ paths:
           description: Deliverable or not with outlet/fees/ETA/slots
   /catalogue/products:
     get:
+      security: []
       tags: [catalogue]
       summary: List sellable products for outlet
       operationId: listProducts
       x-phase: 3
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+          description: Simple name search (case-insensitive contains)
+        - in: query
+          name: categoryId
+          required: false
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
-          description: Product list
+          description: Product list with live availability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListResponse"
+  /catalogue/products/{productId}:
+    get:
+      security: []
+      tags: [catalogue]
+      summary: Product detail with variants, add-ons, allergens, availability
+      operationId: getProduct
+      x-phase: 3
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /availability:
+    get:
+      security: []
+      tags: [availability]
+      summary: Batch/stock availability snapshot for outlet (cacheable)
+      operationId: getAvailability
+      x-phase: 3
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Availability map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilitySnapshot"
+  /admin/catalogue/products:
+    get:
+      tags: [admin, catalogue]
+      summary: Admin list products (including unpublished)
+      operationId: adminListProducts
+      x-phase: 3
+      responses:
+        "200":
+          description: Admin product list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListResponse"
+    post:
+      tags: [admin, catalogue]
+      summary: Create product draft
+      operationId: adminCreateProduct
+      x-phase: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminProductUpsert"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetail"
+  /admin/catalogue/products/{productId}:
+    put:
+      tags: [admin, catalogue]
+      summary: Update product
+      operationId: adminUpdateProduct
+      x-phase: 3
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminProductUpsert"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetail"
+    post:
+      tags: [admin, catalogue]
+      summary: Publish or unpublish product
+      operationId: adminPublishProduct
+      x-phase: 3
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [published]
+              properties:
+                published:
+                  type: boolean
+      responses:
+        "200":
+          description: Publish state updated
+  /admin/catalogue/products/{productId}/unavailable:
+    post:
+      tags: [admin, catalogue]
+      summary: Mark product/variant unavailable for a duration
+      operationId: adminMarkUnavailable
+      x-phase: 3
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkUnavailableRequest"
+      responses:
+        "200":
+          description: Unavailability applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilityInfo"
+  /admin/inventory/batches:
+    post:
+      tags: [admin]
+      summary: Create or adjust a production batch
+      operationId: adminCreateBatch
+      x-phase: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchUpsert"
+      responses:
+        "201":
+          description: Batch created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
   /carts/me:
     get:
       tags: [carts]
@@ -190,6 +615,30 @@ components:
       properties:
         code:
           type: string
+          enum:
+            - AUTH_OTP_INVALID
+            - AUTH_OTP_RATE_LIMITED
+            - AUTH_SESSION_REVOKED
+            - AUTH_FORBIDDEN
+            - SERVICEABILITY_OUT_OF_ZONE
+            - CATALOGUE_SOLD_OUT
+            - CATALOGUE_STALE_PRICE
+            - CART_VALIDATION_FAILED
+            - SLOT_FULL
+            - OUTLET_CLOSED
+            - ORDER_IDEMPOTENCY_CONFLICT
+            - ORDER_INVALID_TRANSITION
+            - PAYMENT_FAILED
+            - PAYMENT_PENDING
+            - PAYMENT_WEBHOOK_INVALID
+            - CAPACITY_EXCEEDED
+            - ASSIGNMENT_CONFLICT
+            - DELIVERY_OTP_INVALID
+            - REFUND_LIMIT_EXCEEDED
+            - VALIDATION_ERROR
+            - NOT_FOUND
+            - CONFLICT
+            - INTERNAL_ERROR
         message:
           type: string
         requestId:
@@ -197,6 +646,459 @@ components:
         details:
           type: object
           additionalProperties: true
+    OtpRequest:
+      type: object
+      required: [phone, purpose]
+      properties:
+        phone:
+          type: string
+          description: E.164 Indian mobile, e.g. +9198XXXXXXXX
+          pattern: '^\+91[6-9]\d{9}$'
+        purpose:
+          type: string
+          enum: [customer_login, rider_login, console_login]
+        deviceId:
+          type: string
+    OtpRequestResponse:
+      type: object
+      required: [requestId, expiresInSeconds, channel]
+      properties:
+        requestId:
+          type: string
+        expiresInSeconds:
+          type: integer
+          example: 300
+        channel:
+          type: string
+          enum: [mock_sms, sms]
+          description: mock_sms in non-prod; never return the OTP code in production responses
+        retryAfterSeconds:
+          type: integer
+    OtpVerify:
+      type: object
+      required: [phone, code, purpose]
+      properties:
+        phone:
+          type: string
+          pattern: '^\+91[6-9]\d{9}$'
+        code:
+          type: string
+          minLength: 4
+          maxLength: 8
+        purpose:
+          type: string
+          enum: [customer_login, rider_login, console_login]
+        deviceId:
+          type: string
+    OtpVerifyResponse:
+      type: object
+      required: [accessToken, tokenType, expiresInSeconds, user, sessionId]
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          enum: [Bearer]
+        expiresInSeconds:
+          type: integer
+        sessionId:
+          type: string
+          format: uuid
+        user:
+          $ref: "#/components/schemas/UserProfile"
+    UserProfile:
+      type: object
+      required: [id, phone, roles]
+      properties:
+        id:
+          type: string
+          format: uuid
+        phone:
+          type: string
+        name:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        language:
+          type: string
+          example: en
+        notificationPrefs:
+          type: object
+          additionalProperties: true
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConsoleRole"
+        mfaRequired:
+          type: boolean
+          description: Console admins only; when true and unmet, admin APIs return AUTH_FORBIDDEN
+        mfaVerified:
+          type: boolean
+    UserProfilePatch:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        language:
+          type: string
+        notificationPrefs:
+          type: object
+          additionalProperties: true
+    DeviceRegister:
+      type: object
+      required: [platform, pushToken]
+      properties:
+        platform:
+          type: string
+          enum: [ios, android, web]
+        pushToken:
+          type: string
+        appVersion:
+          type: string
+        deviceId:
+          type: string
+    Device:
+      type: object
+      required: [id, platform]
+      properties:
+        id:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          enum: [ios, android, web]
+        appVersion:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ConsoleRole:
+      type: string
+      enum:
+        - customer
+        - rider
+        - kitchen
+        - dispatcher
+        - support
+        - catalogue
+        - finance
+        - outlet
+        - super_admin
+    AdminRole:
+      type: object
+      required: [role, permissions]
+      properties:
+        role:
+          $ref: "#/components/schemas/ConsoleRole"
+        permissions:
+          type: array
+          items:
+            type: string
+    AdminUserRoles:
+      type: object
+      required: [userId, roles]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConsoleRole"
+    Allergen:
+      type: string
+      enum: [gluten, dairy, nuts, soy, egg, sesame, shellfish, other]
+    ServingSize:
+      type: object
+      required: [label, grams]
+      properties:
+        label:
+          type: string
+          example: Regular
+        grams:
+          type: integer
+          minimum: 1
+    Money:
+      type: object
+      required: [amountPaise, currency]
+      properties:
+        amountPaise:
+          type: integer
+          minimum: 0
+        currency:
+          type: string
+          enum: [INR]
+    AvailabilityStatus:
+      type: string
+      enum: [available, low_stock, sold_out, unavailable]
+    AvailabilityInfo:
+      type: object
+      required: [status, remaining]
+      properties:
+        status:
+          $ref: "#/components/schemas/AvailabilityStatus"
+        remaining:
+          type: integer
+          minimum: 0
+        lowStockThreshold:
+          type: integer
+        nextBatchAt:
+          type: string
+          format: date-time
+          nullable: true
+        unavailableUntil:
+          type: string
+          format: date-time
+          nullable: true
+    ProductVariant:
+      type: object
+      required: [id, name, servingSize, price, availability]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        servingSize:
+          $ref: "#/components/schemas/ServingSize"
+        price:
+          $ref: "#/components/schemas/Money"
+        availability:
+          $ref: "#/components/schemas/AvailabilityInfo"
+    AddonOption:
+      type: object
+      required: [id, name, price]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        price:
+          $ref: "#/components/schemas/Money"
+        maxQuantity:
+          type: integer
+          minimum: 1
+    AddonGroup:
+      type: object
+      required: [id, name, minSelect, maxSelect, options]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        minSelect:
+          type: integer
+          minimum: 0
+        maxSelect:
+          type: integer
+          minimum: 1
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddonOption"
+    ComboComponent:
+      type: object
+      required: [productId, variantId, quantity]
+      properties:
+        productId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        stockSource:
+          type: string
+          enum: [component, combo_only]
+          description: component decrements child stock once; combo_only uses combo batch
+    ProductSummary:
+      type: object
+      required: [id, name, categoryId, published, availability, allergens]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          type: string
+          format: uuid
+        categoryName:
+          type: string
+        published:
+          type: boolean
+        isCombo:
+          type: boolean
+        allergens:
+          type: array
+          items:
+            $ref: "#/components/schemas/Allergen"
+        imageUrl:
+          type: string
+          nullable: true
+        fromPrice:
+          $ref: "#/components/schemas/Money"
+        availability:
+          $ref: "#/components/schemas/AvailabilityInfo"
+    ProductDetail:
+      allOf:
+        - $ref: "#/components/schemas/ProductSummary"
+        - type: object
+          required: [variants, addonGroups]
+          properties:
+            variants:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductVariant"
+            addonGroups:
+              type: array
+              items:
+                $ref: "#/components/schemas/AddonGroup"
+            comboComponents:
+              type: array
+              items:
+                $ref: "#/components/schemas/ComboComponent"
+            taxCode:
+              type: string
+    ProductListResponse:
+      type: object
+      required: [outletId, products]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductSummary"
+    AvailabilitySnapshot:
+      type: object
+      required: [outletId, generatedAt, items]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        generatedAt:
+          type: string
+          format: date-time
+        items:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/AvailabilityInfo"
+          description: Map keyed by variantId
+    AdminProductUpsert:
+      type: object
+      required: [name, categoryId, variants]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          type: string
+          format: uuid
+        allergens:
+          type: array
+          items:
+            $ref: "#/components/schemas/Allergen"
+        isCombo:
+          type: boolean
+        taxCode:
+          type: string
+        imageUrl:
+          type: string
+        variants:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [name, servingSize, pricePaise]
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+              servingSize:
+                $ref: "#/components/schemas/ServingSize"
+              pricePaise:
+                type: integer
+                minimum: 0
+        addonGroups:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddonGroup"
+        comboComponents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ComboComponent"
+    MarkUnavailableRequest:
+      type: object
+      required: [until]
+      properties:
+        variantId:
+          type: string
+          format: uuid
+          description: Omit to mark all variants of the product
+        until:
+          type: string
+          format: date-time
+        reason:
+          type: string
+    BatchUpsert:
+      type: object
+      required: [outletId, variantId, serviceDate, portions]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        serviceDate:
+          type: string
+          format: date
+        portions:
+          type: integer
+          minimum: 0
+        wastage:
+          type: integer
+          minimum: 0
+          default: 0
+    Batch:
+      type: object
+      required: [id, outletId, variantId, serviceDate, portionsTotal, portionsRemaining, wastage]
+      properties:
+        id:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        serviceDate:
+          type: string
+          format: date
+        portionsTotal:
+          type: integer
+        portionsRemaining:
+          type: integer
+        wastage:
+          type: integer
     OrderState:
       type: string
       enum:

@@ -16,7 +16,7 @@ Combos deduct component stock correctly once.
 
 ## Acceptance
 
-- [ ] Combo cannot oversell component
+- [x] Combo cannot oversell component
 
 ## Tests
 

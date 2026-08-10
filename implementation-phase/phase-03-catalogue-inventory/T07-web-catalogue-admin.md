@@ -17,7 +17,7 @@ Minimal CRUD UI for products/variants and publish action.
 
 ## Acceptance
 
-- [ ] Manager can publish a product change
+- [x] Manager can publish a product change
 
 ## Tests
 
