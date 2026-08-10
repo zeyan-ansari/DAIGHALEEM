@@ -1,35 +1,38 @@
 # DAIG Haleem — Platform Orchestration
 
-This repository (`DAIGHALEEM`) holds product requirements, shared API contracts, and a **phase-based implementation system**. Application code lives in **separate sibling repos**.
+This repository (`DAIGHALEEM`) holds product requirements, shared API contracts, a **phase-based implementation system**, and **git submodules** for the four app repos.
+
+## Clone (all code)
+
+```bash
+git clone --recurse-submodules -b code/phasedimplementation https://github.com/zeyan-ansari/DAIGHALEEM.git
+cd DAIGHALEEM
+```
+
+If you already cloned without submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+App code lands under `apps/`:
+
+| Path | Role | Stack |
+|------|------|--------|
+| `apps/daig-backend` | APIs, workers, DB, webhooks | NestJS + PostgreSQL + Redis |
+| `apps/daig-customer-app` | Customer mobile | Flutter |
+| `apps/daig-rider-app` | Delivery partner mobile | Flutter |
+| `apps/daig-web-console` | Kitchen, dispatch, support, admin | Next.js |
+
+Each submodule tracks branch `code/phasedimplementation`. Remotes: [daig-backend](https://github.com/Siddiqui-Shahid/daig-backend), [daig-customer-app](https://github.com/Siddiqui-Shahid/daig-customer-app), [daig-rider-app](https://github.com/Siddiqui-Shahid/daig-rider-app), [daig-web-console](https://github.com/Siddiqui-Shahid/daig-web-console).
+
+Local run commands: [RUN.md](RUN.md). Layout details: [implementation-phase/00-REPO-LAYOUT.md](implementation-phase/00-REPO-LAYOUT.md).
 
 ## Product
 
 DAIG Haleem is a single-brand direct delivery platform (not a restaurant marketplace): customer app, rider app, kitchen/dispatch/admin web console, and backend APIs.
 
 Source of truth for product rules: [DAIG_Haleem_Product_Requirements.docx](DAIG_Haleem_Product_Requirements.docx).
-
-## Confirmed stack
-
-| Repo | Role | Stack |
-|------|------|--------|
-| `daig-backend` | APIs, workers, DB, webhooks | NestJS + PostgreSQL + Redis + BullMQ |
-| `daig-customer-app` | Customer mobile | Flutter (Android + iOS) |
-| `daig-rider-app` | Delivery partner mobile | Flutter (Android-first) |
-| `daig-web-console` | Kitchen, dispatch, support, admin | Next.js |
-| `DAIGHALEEM` (this repo) | PRD, contracts, phase instructions | Docs only |
-
-## Sibling layout
-
-```
-~/Desktop/Projects/
-  DAIGHALEEM/           # this repo
-  daig-backend/
-  daig-customer-app/
-  daig-rider-app/
-  daig-web-console/
-```
-
-Details: [implementation-phase/00-REPO-LAYOUT.md](implementation-phase/00-REPO-LAYOUT.md).
 
 ## How to implement (autonomous)
 
