@@ -98,7 +98,7 @@ Status per row: `[ ]` pending · `[x]` pass · `[~]` waived
 | FN-02 | Partial refund ledger correct | 09 | Must | [x] | refund decision + execute mock |
 | FN-03 | COD offset (if COD on) | 10 | Must | [~] | COD off for pilot |
 | FN-04 | Tip payout separate from outlet revenue | 10 | Must | [x] | ledger tip vs outletRevenue |
-| FN-05 | Failed payout shows resolution path | 10 | Should | [ ] | |
+| FN-05 | Failed payout shows resolution path | 10 | Should | [x] | payout stub failed status path |
 | FN-06 | Reconciliation exception report | 10 | Must | [x] | finance.exceptions job |
 | FN-07 | Double refund prevented | 09 | Must | [x] | refund.dedupe.spec |
 
