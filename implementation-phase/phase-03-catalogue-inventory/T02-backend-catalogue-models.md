@@ -16,8 +16,8 @@ Persist categories, products, variants, add-on groups, combos, taxes metadata.
 
 ## Acceptance
 
-- [ ] Seed loads
-- [ ] FK integrity for variants
+- [x] Seed loads
+- [x] FK integrity for variants
 
 ## Tests
 

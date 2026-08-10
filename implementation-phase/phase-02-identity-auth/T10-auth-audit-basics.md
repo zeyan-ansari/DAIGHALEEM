@@ -16,7 +16,7 @@ Log login, logout, revoke, role change with actor and request id.
 
 ## Acceptance
 
-- [ ] Role change creates audit row
+- [x] Role change creates audit row
 
 ## Tests
 

@@ -2,6 +2,12 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://daig.local/schemas/payment-states.json",
   "title": "DAIG Payment Status",
+  "description": "Independent of fulfilment orderStatus. Mock gateway only in pilot.",
   "type": "string",
-  "enum": ["pending", "authorized", "captured", "failed", "cancelled"]
+  "enum": ["pending", "authorized", "captured", "failed", "cancelled"],
+  "notes": [
+    "Order create starts paymentStatus=pending with hold TTL.",
+    "captured → fulfilment orderStatus becomes confirmed (if not already).",
+    "Expiry of pending releases stock/slot once; does not cancel paid orders."
+  ]
 }

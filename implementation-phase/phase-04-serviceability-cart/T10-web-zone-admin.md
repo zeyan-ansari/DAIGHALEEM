@@ -16,7 +16,7 @@ Edit outlet hours and zone fee/min order basics.
 
 ## Acceptance
 
-- [ ] Saved zone affects serviceability
+- [x] Saved zone affects serviceability
 
 ## Tests
 

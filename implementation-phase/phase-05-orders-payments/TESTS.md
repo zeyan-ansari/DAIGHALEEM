@@ -4,12 +4,12 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] Idempotent create: double submit one order
-- [ ] Payment success/fail/pending/timeout/late webhook/duplicate webhook
-- [ ] Retry payment does not duplicate order or lose hold incorrectly
-- [ ] Invalid state transition rejected
-- [ ] Kitchen rejection preserves cancelled fulfilment and starts a separate refund lifecycle
-- [ ] COD path blocked when flag off
+- [x] Idempotent create: double submit one order
+- [x] Payment success/fail/pending/timeout/late webhook/duplicate webhook
+- [x] Retry payment does not duplicate order or lose hold incorrectly
+- [x] Invalid state transition rejected
+- [ ] Kitchen rejection preserves cancelled fulfilment and starts a separate refund lifecycle _(Phase 06 OR-01)_
+- [x] COD path blocked when flag off
 
 ## Manual / field
 

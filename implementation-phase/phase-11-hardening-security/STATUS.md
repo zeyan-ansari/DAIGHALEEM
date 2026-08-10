@@ -1,20 +1,22 @@
 # Phase 11 — STATUS
 
-Phase complete: [ ]
+Phase complete: [x]
 
 ## Tasks
 
-- [ ] T01 — API rate limits
-- [ ] T02 — IDOR and authz regression suite
-- [ ] T03 — Webhook forgery + replay tests
-- [ ] T04 — PII scrubbing in logs
-- [ ] T05 — Secrets hygiene pass
-- [ ] T06 — Load-test scripts order+location
-- [ ] T07 — Backup/restore runbook
-- [ ] T08 — Mobile security basics
-- [ ] T09 — Admin MFA + access review checklist
-- [ ] T10 — Resilience checklist tests
+- [x] T01 — API rate limits
+- [x] T02 — IDOR and authz regression suite
+- [x] T03 — Webhook forgery + replay tests *(existing webhooks.spec)*
+- [x] T04 — PII scrubbing in logs
+- [x] T05 — Secrets hygiene pass
+- [x] T06 — Load-test scripts order+location
+- [x] T07 — Backup/restore runbook
+- [x] T08 — Mobile security basics
+- [x] T09 — Admin MFA + access review checklist
+- [x] T10 — Resilience checklist tests
 
 ## Notes
 
-_Add blockers or decisions here._
+- OTP burst → 429; IDOR suite; redact unit; secrets_hygiene.sh ok
+- Rider tokens moved to FlutterSecureStorage
+- Backend unit 26 · new e2e rate/idor/resilience green

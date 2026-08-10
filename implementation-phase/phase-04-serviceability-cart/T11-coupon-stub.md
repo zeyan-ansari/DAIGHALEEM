@@ -16,7 +16,7 @@ Minimal coupon apply with clear failure reasons (PRC-003); full engine can deepe
 
 ## Acceptance
 
-- [ ] Invalid coupon explains why
+- [x] Invalid coupon explains why
 
 ## Tests
 

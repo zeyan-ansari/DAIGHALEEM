@@ -17,7 +17,7 @@ Show itemized cart and all fees before payment (CUS-021/022).
 
 ## Acceptance
 
-- [ ] No fee hidden behind pay button
+- [x] No fee hidden behind pay button
 
 ## Tests
 

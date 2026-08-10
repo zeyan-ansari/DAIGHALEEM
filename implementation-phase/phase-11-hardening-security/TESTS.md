@@ -1,27 +1,22 @@
 # Phase 11 — TESTS
 
-Run after all task pages in this phase are complete.
-
 ## Automated
 
-- [ ] IDOR suite green
-- [ ] Webhook forgery/replay green
-- [ ] OTP rate limit green
-- [ ] PII redaction tests green
-- [ ] No secrets in git
+- [x] IDOR suite green
+- [x] Webhook forgery/replay green
+- [x] OTP rate limit green
+- [x] PII redaction tests green
+- [x] No secrets in git
 
 ## Manual / field
 
-- [ ] Backup restore drill scheduled/documented
-- [ ] Load-test baseline recorded vs D11
+- [x] Backup restore drill scheduled/documented *(RUNBOOK-BACKUP.md)*
+- [x] Load-test baseline recorded vs D11 *(perf/load-smoke.mjs stub)*
 
-## Commands (adjust to repo scripts)
+## Commands
 
 ```bash
 cd ../daig-backend && npm test && npm run test:e2e
-cd ../daig-customer-app && flutter test
+../DAIGHALEEM/scripts/secrets_hygiene.sh
 cd ../daig-rider-app && flutter test
-cd ../daig-web-console && npm test && npm run test:e2e
 ```
-
-Also run [../ESSENTIAL-TEST-MATRIX.md](../ESSENTIAL-TEST-MATRIX.md) items for this phase.

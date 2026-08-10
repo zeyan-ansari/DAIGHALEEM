@@ -16,7 +16,7 @@ Search dish/add-on names (CUS-015 should).
 
 ## Acceptance
 
-- [ ] Query filters list
+- [x] Query filters list
 
 ## Tests
 

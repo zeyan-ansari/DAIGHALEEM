@@ -4,16 +4,16 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] Out of zone returns SERVICEABILITY_OUT_OF_ZONE and waitlist capture works
-- [ ] Cart price matches server quote
-- [ ] Fee lines present before payment
-- [ ] Price version mismatch rejected
-- [ ] Slot full returns SLOT_FULL on validate
+- [x] Out of zone returns SERVICEABILITY_OUT_OF_ZONE and waitlist capture works
+- [x] Cart price matches server quote
+- [x] Fee lines present before payment
+- [x] Price version mismatch rejected
+- [x] Slot full returns SLOT_FULL on validate
 
 ## Manual / field
 
-- [ ] Map pin address save on device
-- [ ] Min order and delivery fee display clearly
+- [ ] Map pin address save on device *(deferred — no live map in MVP; lat/lng form + serviceability instead)*
+- [x] Min order and delivery fee display clearly *(cart fee breakdown widget test + server quote lines)*
 
 ## Commands (adjust to repo scripts)
 

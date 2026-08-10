@@ -4,11 +4,11 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] Two riders accept race: only one wins
-- [ ] Assignment audited with reason on reassign
-- [ ] Pickup blocked if not packed unless override role
-- [ ] Go online blocked without required checks stub
-- [ ] Batching flag off prevents multi-order assign
+- [x] Two riders accept race: only one wins
+- [x] Assignment audited with reason on reassign
+- [x] Pickup blocked if not packed unless override role
+- [x] Go online blocked without required checks stub
+- [x] Batching flag off prevents multi-order assign
 
 ## Manual / field
 

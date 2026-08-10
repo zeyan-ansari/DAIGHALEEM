@@ -16,7 +16,7 @@ GET products with availability, low stock, sold out, next batch indicators.
 
 ## Acceptance
 
-- [ ] Sold out flagged correctly
+- [x] Sold out flagged correctly
 
 ## Tests
 

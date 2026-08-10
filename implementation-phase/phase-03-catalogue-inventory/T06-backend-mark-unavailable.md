@@ -16,7 +16,7 @@ OPS-005: mark unavailable for duration; availability updates immediately.
 
 ## Acceptance
 
-- [ ] Item hidden/sold-out while unavailable
+- [x] Item hidden/sold-out while unavailable
 
 ## Tests
 

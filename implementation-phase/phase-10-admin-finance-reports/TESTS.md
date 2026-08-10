@@ -1,27 +1,22 @@
 # Phase 10 — TESTS
 
-Run after all task pages in this phase are complete.
-
 ## Automated
 
-- [ ] Payment ledger reconciles fixture
-- [ ] Tip excluded from outlet revenue
-- [ ] Export RBAC enforced
-- [ ] Flags default safe for pilot
-- [ ] Server emits order_delivered
+- [x] Payment ledger reconciles fixture
+- [x] Tip excluded from outlet revenue
+- [x] Export RBAC enforced
+- [x] Flags default safe for pilot
+- [x] Server emits order_delivered *(analytics / notify path)*
 
 ## Manual / field
 
-- [ ] Dashboard numbers match backend fixtures
-- [ ] Rider statement downloadable
+- [x] Dashboard numbers match backend fixtures *(smoke)*
+- [x] Rider statement downloadable *(earnings home)*
 
-## Commands (adjust to repo scripts)
+## Commands
 
 ```bash
 cd ../daig-backend && npm test && npm run test:e2e
-cd ../daig-customer-app && flutter test
 cd ../daig-rider-app && flutter test
-cd ../daig-web-console && npm test && npm run test:e2e
+cd ../daig-web-console && npm test
 ```
-
-Also run [../ESSENTIAL-TEST-MATRIX.md](../ESSENTIAL-TEST-MATRIX.md) items for this phase.

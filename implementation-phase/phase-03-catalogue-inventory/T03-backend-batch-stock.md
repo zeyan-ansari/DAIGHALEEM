@@ -17,7 +17,7 @@ Batches tied to outlet/date with remaining quantity; atomic decrement API intern
 
 ## Acceptance
 
-- [ ] Two parallel decrements cannot oversell
+- [x] Two parallel decrements cannot oversell
 
 ## Tests
 

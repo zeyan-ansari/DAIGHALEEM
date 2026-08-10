@@ -16,8 +16,8 @@ Server-side authorize console roles (kitchen, dispatcher, support, catalogue, fi
 
 ## Acceptance
 
-- [ ] Unauthorized role gets 403
-- [ ] Authorized role succeeds
+- [x] Unauthorized role gets 403
+- [x] Authorized role succeeds
 
 ## Tests
 

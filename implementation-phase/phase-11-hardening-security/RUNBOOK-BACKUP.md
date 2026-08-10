@@ -1,23 +1,26 @@
-# Backup and restore runbook (stub)
+# Backup and restore runbook
 
-## Targets (fill during Phase 11)
+## Targets (pilot)
 
-- RPO:
-- RTO:
-- Backup schedule:
-- Backup location:
-- Incident owners:
+- RPO: 24h (daily dump acceptable for Mira Road pilot)
+- RTO: 4h (restore + migrate + smoke)
+- Backup schedule: daily `pg_dump` off-box
+- Backup location: founder/ops-controlled storage (not in git)
+- Incident owners: on-call ops + engineering
 
-## Postgres backup (example)
+## Postgres backup
 
 ```bash
-# example only — adapt to your hosting
+cd ../daig-backend
 pg_dump "$DATABASE_URL" > backup-$(date +%F).sql
 ```
+
+Redis OTP/session cache is ephemeral — no backup required for pilot.
 
 ## Restore drill checklist
 
 - [ ] Restore to isolated instance
+- [ ] Run migrations if needed
 - [ ] Verify row counts for orders/payments/refunds
 - [ ] Verify latest order timeline integrity
 - [ ] Verify app login against restored DB
@@ -25,4 +28,4 @@ pg_dump "$DATABASE_URL" > backup-$(date +%F).sql
 
 ## Notes
 
-Untested backups are not a launch gate pass.
+Untested backups are not a launch gate pass. Schedule first drill before leaving mocks.

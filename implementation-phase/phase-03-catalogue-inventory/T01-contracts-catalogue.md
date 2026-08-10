@@ -16,7 +16,7 @@ Define product, variant, add-on, combo, availability response shapes.
 
 ## Acceptance
 
-- [ ] Schemas include serving size, allergens, availability
+- [x] Schemas include serving size, allergens, availability
 
 ## Tests
 

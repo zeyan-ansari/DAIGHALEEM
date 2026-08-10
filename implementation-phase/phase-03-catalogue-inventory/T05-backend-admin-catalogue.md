@@ -17,7 +17,7 @@ CRUD with draft/preview/publish and audit of critical price changes.
 
 ## Acceptance
 
-- [ ] Unpublished draft not visible publicly
+- [x] Unpublished draft not visible publicly
 
 ## Tests
 

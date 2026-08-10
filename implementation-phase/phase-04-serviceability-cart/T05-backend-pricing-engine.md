@@ -17,7 +17,7 @@ Canonical total calculation; versioned prices; tip excluded from outlet revenue.
 
 ## Acceptance
 
-- [ ] Quote deterministic for fixture cart
+- [x] Quote deterministic for fixture cart
 
 ## Tests
 

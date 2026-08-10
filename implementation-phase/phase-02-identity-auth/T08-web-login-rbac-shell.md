@@ -17,8 +17,8 @@ Login page calling OTP/admin auth path; route guards by role placeholder.
 
 ## Acceptance
 
-- [ ] Unauthorized user redirected
-- [ ] Authorized reaches stub
+- [x] Unauthorized user redirected
+- [x] Authorized reaches stub
 
 ## Tests
 

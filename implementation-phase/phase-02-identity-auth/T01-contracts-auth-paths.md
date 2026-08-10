@@ -17,7 +17,7 @@ Document /auth/otp/*, /users/me, /devices, admin role endpoints.
 
 ## Acceptance
 
-- [ ] OpenAPI includes auth verify/request and users/me
+- [x] OpenAPI includes auth verify/request and users/me
 
 ## Tests
 

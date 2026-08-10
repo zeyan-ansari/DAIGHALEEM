@@ -17,7 +17,7 @@ Show categories, cards with photo/name/price/availability; detail with variants/
 
 ## Acceptance
 
-- [ ] Sold out cannot be added (button disabled)
+- [x] Sold out cannot be added (button disabled)
 
 ## Tests
 

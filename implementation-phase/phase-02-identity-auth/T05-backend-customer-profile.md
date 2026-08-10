@@ -16,7 +16,7 @@ GET/PATCH /users/me for name, email, language, notification prefs; account delet
 
 ## Acceptance
 
-- [ ] Authenticated customer can read/update profile
+- [x] Authenticated customer can read/update profile
 
 ## Tests
 

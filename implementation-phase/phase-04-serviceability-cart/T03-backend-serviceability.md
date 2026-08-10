@@ -16,7 +16,7 @@ Return deliverable, outlet, mode, fee, min order, ETA/slots preview.
 
 ## Acceptance
 
-- [ ] Out of zone structured error
+- [x] Out of zone structured error
 
 ## Tests
 

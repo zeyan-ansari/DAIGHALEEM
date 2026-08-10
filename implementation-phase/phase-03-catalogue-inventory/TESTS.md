@@ -4,14 +4,14 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] Concurrent last-portion: only one checkout reservation succeeds later (stock decrement atomic)
-- [ ] Sold-out product not returned as available
-- [ ] Stale price version rejected at validation helper
-- [ ] Mark unavailable propagates to availability API
+- [x] Concurrent last-portion: only one checkout reservation succeeds later (stock decrement atomic)
+- [x] Sold-out product not returned as available
+- [x] Stale price version rejected at validation helper
+- [x] Mark unavailable propagates to availability API
 
 ## Manual / field
 
-- [ ] Catalogue manager can draft then publish a price change
+- [x] Catalogue manager can draft then publish a price change *(covered by T07 publish UI + smoke; Admin APIs + console BFF)*
 
 ## Commands (adjust to repo scripts)
 
