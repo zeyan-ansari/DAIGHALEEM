@@ -16,7 +16,7 @@ Reject forged signatures; replay protection; amount/order verification.
 
 ## Acceptance
 
-- [ ] All reject safely
+- [x] All reject safely
 
 ## Tests
 

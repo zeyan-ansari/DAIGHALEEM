@@ -16,7 +16,7 @@ Rate limit OTP, auth, and sensitive writes; return structured errors.
 
 ## Acceptance
 
-- [ ] Burst OTP blocked
+- [x] Burst OTP blocked
 
 ## Tests
 

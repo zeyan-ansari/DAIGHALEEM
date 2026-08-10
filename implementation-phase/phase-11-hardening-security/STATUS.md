@@ -17,6 +17,7 @@ Phase complete: [x]
 
 ## Notes
 
-- OTP burst → 429; IDOR suite; redact unit; secrets_hygiene.sh ok
-- Rider tokens moved to FlutterSecureStorage
-- Backend unit 26 · new e2e rate/idor/resilience green
+- OTP burst → 429; IDOR suite expanded; audit meta scrubbed; secrets_hygiene.sh ok
+- Rider + customer tokens in FlutterSecureStorage with unit tests
+- Backend unit 26 · e2e 118 green (rate/idor/webhook/resilience/mfa)
+- REVIEW-R1/R2 + AUDIT-R1/R2 complete

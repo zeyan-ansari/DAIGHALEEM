@@ -16,7 +16,7 @@ Secure token storage; certificate pinning decision stub; block debugger notes fo
 
 ## Acceptance
 
-- [ ] Tokens not in plaintext prefs
+- [x] Tokens not in plaintext prefs
 
 ## Tests
 

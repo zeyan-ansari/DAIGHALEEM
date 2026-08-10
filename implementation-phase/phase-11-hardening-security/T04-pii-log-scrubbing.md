@@ -16,7 +16,7 @@ Exclude PII/payment data from logs and analytics payloads.
 
 ## Acceptance
 
-- [ ] Phone not present in log fixtures
+- [x] Phone not present in log fixtures
 
 ## Tests
 

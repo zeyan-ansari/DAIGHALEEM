@@ -85,7 +85,7 @@ Status per row: `[ ]` pending · `[x]` pass · `[~]` waived
 | SEC-02 | IDOR on orders/addresses | 05 | Must | [x] | orders + addresses e2e |
 | SEC-03 | Role bypass attempts fail | 02 | Must | [x] | security.idor + rbac |
 | SEC-04 | Webhook forgery rejected | 05 | Must | [x] | webhooks e2e 401 |
-| SEC-05 | Coupon abuse basic controls | 04 | Should | [ ] | |
+| SEC-05 | Coupon abuse basic controls | 04 | Should | [x] | promotions.service.spec + serviceability-cart validate |
 | SEC-06 | Location/privacy expiry | 08 | Must | [x] | privacy.expiry + location reject |
 | SEC-07 | Export permissions | 10 | Must | [x] | finance.phase10 export RBAC |
 | SEC-08 | Admin MFA gate | 02 | Must | [x] | admin.mfa.spec |

@@ -16,7 +16,7 @@ Ensure no secrets committed; examples only; document secret manager usage.
 
 ## Acceptance
 
-- [ ] rg finds no private keys/tokens in git
+- [x] rg finds no private keys/tokens in git
 
 ## Tests
 

@@ -16,7 +16,7 @@ Ensure admin MFA gate active; document periodic access review process.
 
 ## Acceptance
 
-- [ ] Checklist committed; MFA e2e green
+- [x] Checklist committed; MFA e2e green
 
 ## Tests
 

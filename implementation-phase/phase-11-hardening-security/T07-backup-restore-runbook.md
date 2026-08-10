@@ -16,7 +16,7 @@ Document RPO/RTO stubs, backup schedule, restore drill steps, incident owners pl
 
 ## Acceptance
 
-- [ ] Runbook file exists with checklist
+- [x] Runbook file exists with checklist
 
 ## Tests
 

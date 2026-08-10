@@ -16,7 +16,7 @@ Customer A cannot read B addresses/orders; rider cannot read others' tasks; role
 
 ## Acceptance
 
-- [ ] All IDOR cases fail closed
+- [x] All IDOR cases fail closed
 
 ## Tests
 

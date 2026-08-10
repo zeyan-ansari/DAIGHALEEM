@@ -16,7 +16,7 @@ API timeout handling, provider outage mock, deploy-during-active-order notes/tes
 
 ## Acceptance
 
-- [ ] Core order path survives provider outage with degraded notifications
+- [x] Core order path survives provider outage with degraded notifications
 
 ## Tests
 

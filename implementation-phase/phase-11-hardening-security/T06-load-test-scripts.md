@@ -16,7 +16,7 @@ k6/artillery scripts for order create and location posts; document 10× peak fro
 
 ## Acceptance
 
-- [ ] Scripts run against staging/local
+- [x] Scripts run against staging/local
 
 ## Tests
 
