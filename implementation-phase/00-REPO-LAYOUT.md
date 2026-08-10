@@ -2,18 +2,19 @@
 
 ## Expected paths
 
-Assume platform root:
+Resolve the platform root from the checked-out `DAIGHALEEM` repository. Do not
+hard-code a developer username or home directory. The documented default is:
 
-`/Users/muhammedshahidsiddiqui/Desktop/Projects/DAIGHALEEM`
+`~/Desktop/Projects/DAIGHALEEM`
 
 Sibling app repos (create in Phase 01 if missing):
 
 | Repo | Path |
 |------|------|
-| Backend | `/Users/muhammedshahidsiddiqui/Desktop/Projects/daig-backend` |
-| Customer app | `/Users/muhammedshahidsiddiqui/Desktop/Projects/daig-customer-app` |
-| Rider app | `/Users/muhammedshahidsiddiqui/Desktop/Projects/daig-rider-app` |
-| Web console | `/Users/muhammedshahidsiddiqui/Desktop/Projects/daig-web-console` |
+| Backend | `../daig-backend` |
+| Customer app | `../daig-customer-app` |
+| Rider app | `../daig-rider-app` |
+| Web console | `../daig-web-console` |
 
 ## Ownership
 
@@ -39,4 +40,6 @@ Suggested GitHub names (adjust to org):
 
 ## Local env
 
-Each app repo gets `.env.example` only. Real secrets stay out of git (1Password/direnv/CI secrets).
+Each app repo gets `.env.example` only. Real secrets stay out of git and live in
+the approved secret manager and CI/deployment secret stores. Local development
+may use untracked environment files or an approved environment loader.

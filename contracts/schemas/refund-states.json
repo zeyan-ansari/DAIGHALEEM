@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://daig.local/schemas/refund-states.json",
+  "title": "DAIG Refund Status",
+  "type": "string",
+  "enum": ["none", "requested", "processing", "partially_refunded", "refunded", "failed"]
+}

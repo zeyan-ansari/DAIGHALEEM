@@ -253,7 +253,7 @@ Final vendor approval and account/credential locations are required.
 
 Still needed:
 - Written approval of this vendor set (or changes)
-- Sandbox account owners + where secrets will live (1Password vault name)
+- Sandbox account owners + approved secret-manager location
 - Razorpay / MSG91 / Google Maps / Firebase / Exotel staging keys when ready
 
 

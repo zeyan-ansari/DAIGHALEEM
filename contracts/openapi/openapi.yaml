@@ -41,6 +41,7 @@ tags:
 paths:
   /health:
     get:
+      security: []
       summary: Liveness/readiness
       operationId: getHealth
       responses:
@@ -56,6 +57,7 @@ paths:
                     example: ok
   /auth/otp/request:
     post:
+      security: []
       tags: [auth]
       summary: Request OTP for Indian mobile number
       operationId: requestOtp
@@ -65,6 +67,7 @@ paths:
           description: OTP sent (or mock accepted)
   /auth/otp/verify:
     post:
+      security: []
       tags: [auth]
       summary: Verify OTP and create session
       operationId: verifyOtp
@@ -116,6 +119,8 @@ paths:
           description: Order created
   /payments/webhooks/{provider}:
     post:
+      security:
+        - providerWebhookSignature: []
       tags: [webhooks]
       summary: Payment provider webhook
       operationId: paymentWebhook
@@ -174,6 +179,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    providerWebhookSignature:
+      type: apiKey
+      in: header
+      name: X-Provider-Signature
   schemas:
     Error:
       type: object
@@ -191,8 +200,6 @@ components:
     OrderState:
       type: string
       enum:
-        - cart
-        - payment_pending
         - confirmed
         - accepted
         - preparing
@@ -202,7 +209,14 @@ components:
         - delivered
         - cancelled
         - delivery_failed
-        - refund_pending
-        - refunded
+    PaymentStatus:
+      type: string
+      enum: [pending, authorized, captured, failed, cancelled]
+    RefundStatus:
+      type: string
+      enum: [none, requested, processing, partially_refunded, refunded, failed]
+    AssignmentStatus:
+      type: string
+      enum: [unassigned, offered, accepted, arrived, picked_up, completed, cancelled]
 security:
   - bearerAuth: []

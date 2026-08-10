@@ -8,7 +8,7 @@ Run after all task pages in this phase are complete.
 - [ ] Payment success/fail/pending/timeout/late webhook/duplicate webhook
 - [ ] Retry payment does not duplicate order or lose hold incorrectly
 - [ ] Invalid state transition rejected
-- [ ] Kitchen-reject path can move to refund_pending (hook)
+- [ ] Kitchen rejection preserves cancelled fulfilment and starts a separate refund lifecycle
 - [ ] COD path blocked when flag off
 
 ## Manual / field

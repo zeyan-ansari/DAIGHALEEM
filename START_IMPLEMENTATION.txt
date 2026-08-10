@@ -8,10 +8,12 @@ tasks target different sibling repos.
 HARD RULES
 ================================================================
 1. Do NOT edit the plan file under .cursor/plans (if present).
-2. Read REQUIRED_DECISIONS.txt first. If any [BLOCKER] has Status UNANSWERED,
-   STOP and list those decisions for the user. Do not invent production vendor
-   credentials. You MAY proceed with documented defaults only for items marked
-   [CAN DEFER] or Status ANSWERED/DEFERRED.
+2. Read REQUIRED_DECISIONS.txt and implementation-phase/PHASE-DECISION-GATES.md
+   first. Phase 01 MAY proceed with documented mocks even while business blockers
+   remain PARTIAL/UNANSWERED. Before Phase 02+, STOP only when a decision required
+   by that phase is not ANSWERED/DEFERRED. List the phase-specific gaps. Never
+   invent production values or vendor credentials. Production/pilot release is
+   blocked until all launch blockers and sign-off are complete.
 3. Read implementation-phase/00-INDEX.md and implementation-phase/00-EXECUTION-RULES.md.
 4. Find the first phase folder whose STATUS.md is not fully complete.
 5. Implement ONLY that phase's unchecked task pages, in dependency order.
@@ -58,7 +60,8 @@ START NOW
 Workspace platform root: the DAIGHALEEM repo containing this file.
 Sibling repos: see implementation-phase/00-REPO-LAYOUT.md.
 
-1) Read REQUIRED_DECISIONS.txt and gate on blockers.
+1) Read REQUIRED_DECISIONS.txt and PHASE-DECISION-GATES.md; apply the current
+   phase gate (Phase 01 permits mocks).
 2) Read implementation-phase/00-INDEX.md.
 3) Locate the first incomplete phase.
 4) Begin implementing its next incomplete task pages.
