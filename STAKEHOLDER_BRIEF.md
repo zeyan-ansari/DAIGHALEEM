@@ -1,36 +1,43 @@
-# DAIG Haleem — What we still need
+# DAIG Haleem — Build stance (simple)
 
-**Updated:** 10 August 2026 · **Repo:** https://github.com/zeyan-ansari/DAIGHALEEM
+**Updated:** 10 August 2026 · **Repo:** https://github.com/zeyan-ansari/DAIGHALEEM  
+**Brand:** [instagram.com/daighaleem](https://www.instagram.com/daighaleem/)
 
-## Done / in progress
-- Product plan + phase system  
-- Peer PR merged (orchestration + lifecycle contracts)  
-- Phase 01 app scaffolds started (`daig-backend`, customer, rider, console)  
-- Pilot defaults: Mira Road · prepaid · COD off · instant + scheduled  
+## What we’re building
+One kitchen brand (not a marketplace). Ops settings live in **Admin / Kitchen**.
 
-## Configurable in Admin / Kitchen (you do **not** need to decide these in a doc)
-Enter later in the console — engineering builds them as settings:
-- Kitchen address, map pin, delivery radius/areas  
-- Open hours, slots, cutoffs  
-- Menu, sizes, **prices**, add-ons, allergens  
-- Batch / 15‑min capacity  
-- Delivery fee, min order, free-delivery threshold  
-- Pack / seal checklist  
-- Support hours text  
+## Decisions locked so we can keep coding
 
-## Still required from you (simple list)
+| Topic | Stance |
+|--------|--------|
+| Payments | **Mock only** — no real gateway keys |
+| Support | **Configurable `wa.me` link** + custom prefilled message (free; Admin-editable) |
+| Legal / GST / FSSAI | **Placeholders** until you replace them |
+| Logo | From DAIG Instagram / placeholder until clean file uploaded |
+| Play + Apple | **Us only** for now; can transfer later |
+| API / store bills | **Us** if/when paid services are turned on (none required while mocked) |
+| Menu, prices, zone, hours, capacity, fees | **Admin/Kitchen config** |
 
-| # | What | Why |
-|---|------|-----|
-| 1 | **Legal entity + GSTIN + FSSAI text** | Invoices & app legal pages |
-| 2 | **DAIG logo files** (SVG/PNG) | Branding (placeholders until then) |
-| 3 | **Rider model** (employee / contractor / vendor) | Legal / contracts |
-| 4 | **Google Play + Apple Developer** account owners | Publish apps |
-| 5 | **Who pays** Maps/SMS/Firebase/Razorpay/store bills | Finance |
-| 6 | **Sandbox API keys** when ready (Razorpay, MSG91, Maps, Firebase) | Leave mocks; not blocking coding |
-| 7 | **Live WhatsApp + phone + support owners** | Before public users |
-| 8 | **Soft-launch week** (optional) | Planning only |
+## What “vendor / store bills” means (for this one-brand model)
+Not restaurant payouts. Only optional third-party costs if we leave mocks later, e.g.:
+- Google Maps usage  
+- SMS OTP  
+- Firebase  
+- Play / Apple developer fees  
 
-## How to send
-Reply with items 1–8, or edit `REQUIRED_DECISIONS.txt`.  
-Secrets → approved secret manager only (never git / WhatsApp).
+While we stay on mocks + `wa.me`, **there are no vendor bills to set up**.
+
+## What engineering can do **right now**
+1. Finish Phase 01 scaffolds  
+2. Auth with **mock OTP**  
+3. Catalogue / cart / kitchen / dispatch with **configurable** data  
+4. Checkout with **mock payment** success/fail  
+5. Support button → **wa.me?text=…** from Admin settings  
+6. Legal pages showing **placeholder** entity text  
+
+## Optional from you (whenever convenient)
+- Export a clear logo from Instagram  
+- Paste the real WhatsApp number into Admin when you have it  
+- Soft-launch week  
+
+No sandbox keys or legal paperwork required to continue development.

@@ -27,6 +27,11 @@ HARD RULES
 9. No marketplace / multi-restaurant features. No Zomato/Swiggy copy.
 10. COD, loyalty, referrals, rider batching stay feature-flagged off unless
     REQUIRED_DECISIONS.txt explicitly enables them.
+10b. Payments stay on MOCK gateway only. Do not wire real Razorpay/live keys.
+10c. Customer support uses Admin-configurable wa.me URL + prefilled message
+    (no WhatsApp Business API required for MVP).
+10d. Legal/GST/FSSAI/logo may be placeholders; brand reference is
+    https://www.instagram.com/daighaleem/
 11. After finishing task pages, run that phase's TESTS.md. Do not mark the
     phase complete until tests pass (or a failure is fixed).
 12. Update the phase STATUS.md checkboxes as you complete tasks.

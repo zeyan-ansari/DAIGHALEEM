@@ -2,67 +2,36 @@ DAIG HALEEM — REQUIRED DECISIONS (short)
 =======================================
 Updated: 10 August 2026
 
-Most ops settings are configured in Admin / Kitchen (not in this file):
-outlet pin & delivery zone, hours/slots, menu & prices, capacity,
-delivery fees / min order, pack checklist, support hours text.
-
-Phase 01+ coding uses mocks/placeholders until those are entered in-app.
+Single-brand Mira Road pilot. Almost everything is Admin/Kitchen config
+or a placeholder/mock until you choose to go live.
 
 ---------------------------------------------------------------------------
-ALREADY LOCKED
+LOCKED FOR BUILD
 ---------------------------------------------------------------------------
-- COD off for pilot (feature-flagged)
-- Pickup off for MVP
-- Instant + scheduled/preorder
-- Refund rules + agent ≤ ₹500 / manager above
-- Platforms: Flutter customer + Android-first rider + Next.js console
-- Proposed vendors: Razorpay, Google Maps, MSG91, Exotel, WhatsApp, Firebase
-
----------------------------------------------------------------------------
-STILL NEED FROM YOU (only these)
----------------------------------------------------------------------------
-
-1) Legal display (before public pilot / invoices)
-   Status: OPEN
-   - Confirm operating entity (Hashforgamers Pvt Ltd yes/no, or correct name)
-   - GSTIN
-   - FSSAI number/text to show in app
-   (These become Admin fields — we still need the real values.)
-
-2) Brand logo files
-   Status: OPEN
-   - SVG/PNG of DAIG logo (placeholders used until then)
-
-3) Rider employment model (legal)
-   Status: OPEN
-   - Employee / contractor / vendor / hybrid
-   (Pay rates themselves are Admin-configurable later.)
-
-4) App store accounts (before store release)
-   Status: OPEN
-   - Google Play Console owner
-   - Apple Developer owner
-
-5) Vendor billing owner
-   Status: OPEN
-   - Who pays Razorpay / Maps / MSG91 / Firebase / store fees
-
-6) Sandbox keys (when leaving mocks — not needed to keep coding)
-   Status: OPEN
-   - Razorpay, MSG91, Google Maps, Firebase via secret manager
-   - Confirm proposed vendor list or name replacements
-
-7) Live support contacts (before public users)
-   Status: OPEN
-   - WhatsApp Business number + escalation phone
-   - Named L1/L2 owners
-
-8) Soft-launch week (optional for coding)
-   Status: OPEN
-   - Target week + go/no-go owner
+- COD off · pickup off · instant + scheduled/preorder
+- Payments: MOCK ONLY (no real Razorpay/live keys in this build phase)
+- Support chat: configurable WhatsApp via free wa.me link + prefilled message
+  Example shape: https://wa.me/<digits>?text=<urlencoded message>
+  Number + message template editable in Admin (no WhatsApp Business API required)
+- Brand reference: https://www.instagram.com/daighaleem/
+  Logo: use IG brand assets / placeholder until a clean SVG/PNG is dropped in Admin
+- Legal entity / GSTIN / FSSAI: PLACEHOLDERS in Admin (replace before real invoices)
+- Store accounts: us only for now (Play + Apple); transferrable later
+- Vendor/API bills: founder/ops “us” pays any future Maps/SMS/Firebase/store fees
+  (not needed while everything stays mocked/local)
+- Rider pay rates + zone/menu/prices/capacity/fees: Admin/Kitchen configurable
+- Rider legal model: placeholder “contractor” until you change it in Admin/docs
 
 ---------------------------------------------------------------------------
-SIGN-OFF (pilot)
+OPTIONAL LATER (not blocking coding)
+---------------------------------------------------------------------------
+- Clean logo file export from Instagram / designer
+- Real legal values when ready for public invoices
+- Real payment/maps/SMS keys only when you deliberately leave mocks
+- Soft-launch week
+
+---------------------------------------------------------------------------
+SIGN-OFF (when leaving mocks for public pilot)
 ---------------------------------------------------------------------------
 Name:
 Date:
