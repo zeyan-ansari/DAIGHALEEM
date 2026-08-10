@@ -2,29 +2,31 @@
 
 Docs: [USER_JOURNEYS.md](USER_JOURNEYS.md) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
+Paths below assume you cloned with submodules (`apps/…`). If you use side-by-side siblings, replace `apps/` with `../`.
+
 ## Postgres + Redis
 ```bash
-cd ../daig-backend && docker compose up -d
+cd apps/daig-backend && docker compose up -d
 ```
 
 ## API
 ```bash
-cd ../daig-backend && cp -n .env.example .env && npm run start:dev
+cd apps/daig-backend && cp -n .env.example .env && npm install && npm run start:dev
 ```
 
 ## Web console
 ```bash
-cd ../daig-web-console && cp -n .env.example .env.local && npm run dev
+cd apps/daig-web-console && cp -n .env.example .env.local && npm install && npm run dev
 ```
 
 ## Customer app
 ```bash
-cd ../daig-customer-app && flutter run
+cd apps/daig-customer-app && flutter pub get && flutter run
 ```
 
 ## Rider app
 ```bash
-cd ../daig-rider-app && flutter run
+cd apps/daig-rider-app && flutter pub get && flutter run
 ```
 
 ## Mock OTP

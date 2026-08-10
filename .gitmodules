@@ -1,0 +1,16 @@
+[submodule "apps/daig-backend"]
+	path = apps/daig-backend
+	url = https://github.com/Siddiqui-Shahid/daig-backend.git
+	branch = code/phasedimplementation
+[submodule "apps/daig-customer-app"]
+	path = apps/daig-customer-app
+	url = https://github.com/Siddiqui-Shahid/daig-customer-app.git
+	branch = code/phasedimplementation
+[submodule "apps/daig-rider-app"]
+	path = apps/daig-rider-app
+	url = https://github.com/Siddiqui-Shahid/daig-rider-app.git
+	branch = code/phasedimplementation
+[submodule "apps/daig-web-console"]
+	path = apps/daig-web-console
+	url = https://github.com/Siddiqui-Shahid/daig-web-console.git
+	branch = code/phasedimplementation

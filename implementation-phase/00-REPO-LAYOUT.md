@@ -1,20 +1,43 @@
-# Sibling repository layout
+# Repository layout
 
-## Expected paths
+## Clone with all app code (submodules)
 
-Resolve the platform root from the checked-out `DAIGHALEEM` repository. Do not
-hard-code a developer username or home directory. The documented default is:
+```bash
+git clone --recurse-submodules -b code/phasedimplementation \
+  https://github.com/zeyan-ansari/DAIGHALEEM.git
+```
 
-`~/Desktop/Projects/DAIGHALEEM`
+| Repo | Path in this clone | Remote |
+|------|--------------------|--------|
+| Backend | `apps/daig-backend` | https://github.com/Siddiqui-Shahid/daig-backend |
+| Customer app | `apps/daig-customer-app` | https://github.com/Siddiqui-Shahid/daig-customer-app |
+| Rider app | `apps/daig-rider-app` | https://github.com/Siddiqui-Shahid/daig-rider-app |
+| Web console | `apps/daig-web-console` | https://github.com/Siddiqui-Shahid/daig-web-console |
+| Platform (this) | `.` | https://github.com/zeyan-ansari/DAIGHALEEM |
 
-Sibling app repos (create in Phase 01 if missing):
+Submodules track branch `code/phasedimplementation`.
 
-| Repo | Path |
-|------|------|
-| Backend | `../daig-backend` |
-| Customer app | `../daig-customer-app` |
-| Rider app | `../daig-rider-app` |
-| Web console | `../daig-web-console` |
+Update later:
+
+```bash
+git pull
+git submodule update --init --recursive
+```
+
+## Alternate: side-by-side siblings
+
+Some agents/docs still use paths next to the platform root:
+
+```
+~/Desktop/Projects/
+  DAIGHALEEM/
+  daig-backend/
+  daig-customer-app/
+  daig-rider-app/
+  daig-web-console/
+```
+
+Either layout is fine; prefer `apps/` when cloning this repo once.
 
 ## Ownership
 
@@ -26,20 +49,6 @@ Sibling app repos (create in Phase 01 if missing):
 | Kitchen/dispatch/admin Next.js | `daig-web-console` |
 | OpenAPI, enums, phase instructions, PRD | `DAIGHALEEM` (this repo) |
 
-## Git remotes
-
-Each app repo is its **own git repository** with its own remote. Do not nest app repos inside `DAIGHALEEM/`.
-
-Suggested GitHub names (adjust to org):
-
-- `daig-backend`
-- `daig-customer-app`
-- `daig-rider-app`
-- `daig-web-console`
-- `DAIGHALEEM` (platform)
-
 ## Local env
 
-Each app repo gets `.env.example` only. Real secrets stay out of git and live in
-the approved secret manager and CI/deployment secret stores. Local development
-may use untracked environment files or an approved environment loader.
+Each app repo gets `.env.example` only. Real secrets stay out of git.
