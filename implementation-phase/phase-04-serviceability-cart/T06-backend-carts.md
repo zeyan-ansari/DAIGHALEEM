@@ -17,7 +17,7 @@ Signed-in cart persistence with validate endpoint for stock/zone/coupon stub.
 
 ## Acceptance
 
-- [ ] Cart survives restart via DB
+- [x] Cart survives restart via DB
 
 ## Tests
 

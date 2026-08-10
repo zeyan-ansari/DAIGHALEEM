@@ -36,8 +36,12 @@ tags:
   - name: dispatch
   - name: support
   - name: notifications
+  - name: tracking
+  - name: comms
   - name: admin
   - name: reports
+  - name: finance
+  - name: analytics
 paths:
   /health:
     get:
@@ -297,13 +301,415 @@ paths:
                 $ref: "#/components/schemas/Error"
   /serviceability:
     post:
+      security: []
       tags: [serviceability]
-      summary: Check address serviceability
+      summary: Check lat/lng (or addressId) serviceability
       operationId: checkServiceability
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceabilityRequest"
+      responses:
+        "200":
+          description: Deliverable result with outlet/fees/ETA/slots preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceabilityResult"
+        "422":
+          description: Out of zone (structured)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                outOfZone:
+                  value:
+                    code: SERVICEABILITY_OUT_OF_ZONE
+                    message: Address is outside delivery zones
+                    requestId: req_example
+  /serviceability/waitlist:
+    post:
+      security: []
+      tags: [serviceability]
+      summary: Capture out-of-zone waitlist interest
+      operationId: joinServiceabilityWaitlist
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitlistRequest"
+      responses:
+        "201":
+          description: Waitlist entry saved
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+  /addresses:
+    get:
+      tags: [addresses]
+      summary: List own saved addresses
+      operationId: listAddresses
       x-phase: 4
       responses:
         "200":
-          description: Deliverable or not with outlet/fees/ETA/slots
+          description: Own addresses only
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [addresses]
+                properties:
+                  addresses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Address"
+    post:
+      tags: [addresses]
+      summary: Create address (Home/Work/Other)
+      operationId: createAddress
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressUpsert"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+  /addresses/{addressId}:
+    put:
+      tags: [addresses]
+      summary: Update own address
+      operationId: updateAddress
+      x-phase: 4
+      parameters:
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressUpsert"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "404":
+          description: Not found or not owned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags: [addresses]
+      summary: Delete own address
+      operationId: deleteAddress
+      x-phase: 4
+      parameters:
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Deleted
+  /admin/outlets/{outletId}:
+    get:
+      tags: [admin, outlets]
+      summary: Get outlet settings
+      operationId: adminGetOutlet
+      x-phase: 4
+      parameters:
+        - in: path
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Outlet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Outlet"
+    put:
+      tags: [admin, outlets]
+      summary: Upsert outlet hours and defaults
+      operationId: adminUpsertOutlet
+      x-phase: 4
+      parameters:
+        - in: path
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OutletUpsert"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Outlet"
+  /admin/outlets/{outletId}/zones:
+    get:
+      tags: [admin, outlets]
+      summary: List delivery zones for outlet
+      operationId: adminListZones
+      x-phase: 4
+      parameters:
+        - in: path
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Zones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [zones]
+                properties:
+                  zones:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DeliveryZone"
+    post:
+      tags: [admin, outlets]
+      summary: Create delivery zone
+      operationId: adminCreateZone
+      x-phase: 4
+      parameters:
+        - in: path
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryZoneUpsert"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryZone"
+  /admin/outlets/{outletId}/zones/{zoneId}:
+    put:
+      tags: [admin, outlets]
+      summary: Update delivery zone
+      operationId: adminUpdateZone
+      x-phase: 4
+      parameters:
+        - in: path
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: zoneId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryZoneUpsert"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryZone"
+  /slots:
+    get:
+      security: []
+      tags: [slots]
+      summary: List delivery slots with capacity remaining (preview; no reserve)
+      operationId: listSlots
+      x-phase: 4
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Slots for day
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlotListResponse"
+  /pricing/quote:
+    post:
+      tags: [pricing]
+      summary: Canonical cart quote (deterministic; tip excluded from outlet revenue)
+      operationId: quoteCart
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartQuoteRequest"
+      responses:
+        "200":
+          description: Quote with fee lines and priceVersion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartQuote"
+        "409":
+          description: Stale price version
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts/me:
+    get:
+      tags: [carts]
+      summary: Get persisted signed-in cart
+      operationId: getCart
+      x-phase: 4
+      responses:
+        "200":
+          description: Cart with server quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+    put:
+      tags: [carts]
+      summary: Replace cart lines (add/update/remove via full replace)
+      operationId: putCart
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartUpsert"
+      responses:
+        "200":
+          description: Updated cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+  /carts/me/validate:
+    post:
+      tags: [carts]
+      summary: Validate cart for stock/zone/slot/coupon; returns fees or errors
+      operationId: validateCart
+      x-phase: 4
+      description: |
+        Does not create an order. Order create (Phase 05) must send Idempotency-Key.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slotId:
+                  type: string
+                  format: uuid
+                couponCode:
+                  type: string
+                tipPaise:
+                  type: integer
+                  minimum: 0
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartValidationResult"
+  /promotions/coupons/validate:
+    post:
+      tags: [promotions]
+      summary: Validate coupon code (stub engine)
+      operationId: validateCoupon
+      x-phase: 4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, outletId]
+              properties:
+                code:
+                  type: string
+                outletId:
+                  type: string
+                  format: uuid
+                subtotalPaise:
+                  type: integer
+                  minimum: 0
+      responses:
+        "200":
+          description: Coupon ok or failure reason
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CouponValidationResult"
   /catalogue/products:
     get:
       security: []
@@ -518,19 +924,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Batch"
-  /carts/me:
+  /orders:
     get:
-      tags: [carts]
-      summary: Get persisted cart
-      operationId: getCart
-      x-phase: 4
+      tags: [orders]
+      summary: List own orders (customer)
+      operationId: listMyOrders
+      x-phase: 5
       responses:
         "200":
-          description: Cart
-  /orders:
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [orders]
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Order"
     post:
       tags: [orders]
-      summary: Create idempotent order
+      summary: Create idempotent order from validated cart
+      description: |
+        Requires Idempotency-Key. Server re-validates cart, reserves stock/slot,
+        snapshots price. paymentStatus=pending until mock/capture webhook.
+        orderStatus becomes confirmed only after captured payment (or COD if enabled).
+        Duplicate Idempotency-Key returns the same order (200 or 201).
       operationId: createOrder
       x-phase: 5
       parameters:
@@ -539,65 +959,1433 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
       responses:
         "201":
-          description: Order created
+          description: Order created (payment pending)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "200":
+          description: Idempotent replay — same order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "409":
+          description: Idempotency conflict or stale price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders/{orderId}:
+    get:
+      tags: [orders, tracking]
+      summary: Get own order detail
+      description: |
+        Phase 08 optional fields on `Order` (customer GET only): `promisedWindow`, `currentEta`,
+        `deliveryOtp` (present when active and undelivered; never on rider/dispatch APIs),
+        `timelineHint` (lightweight status copy for list cards).
+      operationId: getOrder
+      x-phase: 5
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders/{orderId}/cancel:
+    post:
+      tags: [orders]
+      summary: Customer cancel before kitchen accept
+      operationId: cancelOrder
+      x-phase: 5
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Cancelled; refund lifecycle separate if paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{orderId}/payment-intent:
+    post:
+      tags: [payments]
+      summary: Create or reuse mock payment intent during hold
+      operationId: createPaymentIntent
+      x-phase: 5
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                simulate:
+                  type: string
+                  enum: [success, fail, pending]
+                  description: Mock-only outcome hint for local/dev
+      responses:
+        "200":
+          description: Intent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+  /orders/{orderId}/invoice:
+    get:
+      tags: [invoices]
+      summary: Get immutable invoice snapshot (JSON)
+      operationId: getOrderInvoice
+      x-phase: 5
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Invoice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
   /payments/webhooks/{provider}:
     post:
       security:
         - providerWebhookSignature: []
       tags: [webhooks]
-      summary: Payment provider webhook
+      summary: Payment provider webhook (mock verifies X-Provider-Signature)
       operationId: paymentWebhook
+      x-phase: 5
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [mock]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentWebhookBody"
+      responses:
+        "200":
+          description: Accepted (idempotent)
+        "401":
+          description: Invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /feature-flags:
+    get:
+      security: []
+      tags: [admin]
+      summary: Public feature flags (COD etc.)
+      operationId: getFeatureFlags
       x-phase: 5
       responses:
         "200":
-          description: Accepted
+          description: Flags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicFeatureFlags"
+  /admin/feature-flags:
+    get:
+      tags: [admin]
+      summary: Admin feature flags (all pilot toggles)
+      operationId: getAdminFeatureFlags
+      x-phase: 10
+      responses:
+        "200":
+          description: Full flag map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFeatureFlags"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags: [admin]
+      summary: Update feature flags (audited)
+      operationId: updateAdminFeatureFlags
+      x-phase: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminFeatureFlagsPatch"
+      responses:
+        "200":
+          description: Updated flags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFeatureFlags"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /finance/orders/{orderId}/ledger:
+    get:
+      tags: [finance]
+      summary: Payment ledger lines for order reconciliation
+      operationId: getOrderPaymentLedger
+      x-phase: 10
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ledger + reconcile summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderLedgerReconcile"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /riders/me/earnings:
+    get:
+      tags: [earnings]
+      summary: Rider earnings statement (per-order breakdown)
+      operationId: getRiderEarnings
+      x-phase: 10
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Earnings statement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderEarningsStatement"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /riders/me/earnings/export:
+    get:
+      tags: [earnings]
+      summary: Rider earnings CSV export
+      operationId: exportRiderEarnings
+      x-phase: 10
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: CSV statement
+          content:
+            text/csv:
+              schema:
+                type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /reports/{reportType}/export:
+    get:
+      tags: [reports, finance]
+      summary: Sync CSV export (finance/outlet RBAC)
+      operationId: exportReportCsv
+      x-phase: 10
+      parameters:
+        - in: path
+          name: reportType
+          required: true
+          schema:
+            $ref: "#/components/schemas/ReportType"
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: outletId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: CSV export
+          headers:
+            X-Report-Job-Id:
+              schema:
+                type: string
+                format: uuid
+          content:
+            text/csv:
+              schema:
+                type: string
+        "403":
+          description: Forbidden (e.g. support role)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /analytics/events/validate:
+    post:
+      tags: [analytics]
+      summary: Validate client analytics event name + payload shape
+      operationId: validateAnalyticsEvent
+      x-phase: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyticsEventInput"
+      responses:
+        "200":
+          description: Accepted (validated)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsEventAccepted"
+        "400":
+          description: Unknown event or invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /admin/finance/exceptions/run:
+    post:
+      tags: [finance, admin]
+      summary: Run daily finance exception scan (callable job)
+      operationId: runFinanceExceptionReport
+      x-phase: 10
+      responses:
+        "200":
+          description: Exception report persisted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinanceExceptionReport"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /kitchen/orders:
     get:
       tags: [kitchen]
-      summary: Kitchen queue
+      summary: Kitchen queue by fulfilment state
       operationId: listKitchenOrders
       x-phase: 6
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum: [confirmed, accepted, preparing, packed, cancelled]
+          description: Filter; default active kitchen states
       responses:
         "200":
-          description: Queue
-  /dispatch/assignments:
+          description: Queue with SLA metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KitchenQueueResponse"
+  /kitchen/orders/{orderId}/accept:
     post:
-      tags: [dispatch]
-      summary: Assign or reassign rider
-      operationId: assignRider
+      tags: [kitchen]
+      summary: Accept order (confirmed → accepted)
+      operationId: kitchenAcceptOrder
+      x-phase: 6
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /kitchen/orders/{orderId}/reject:
+    post:
+      tags: [kitchen]
+      summary: Reject order → cancelled + refund path if paid
+      operationId: kitchenRejectOrder
+      x-phase: 6
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  minLength: 3
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /kitchen/orders/{orderId}/preparing:
+    post:
+      tags: [kitchen]
+      summary: Mark preparing
+      operationId: kitchenMarkPreparing
+      x-phase: 6
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Preparing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /kitchen/orders/{orderId}/pack:
+    post:
+      tags: [kitchen]
+      summary: Mark packed (requires seal checklist)
+      operationId: kitchenPackOrder
+      x-phase: 6
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PackRequest"
+      responses:
+        "200":
+          description: Packed with pickup code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackResult"
+  /kitchen/orders/{orderId}/ticket:
+    get:
+      tags: [kitchen]
+      summary: Ticket payload for display/print (no unnecessary phone)
+      operationId: kitchenGetTicket
+      x-phase: 6
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ticket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KitchenTicket"
+  /kitchen/batches:
+    get:
+      tags: [kitchen]
+      summary: List today's batches for outlet
+      operationId: kitchenListBatches
+      x-phase: 6
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Batches
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [batches]
+                properties:
+                  batches:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Batch"
+  /kitchen/batches/{batchId}/wastage:
+    post:
+      tags: [kitchen]
+      summary: Record wastage (reduces remaining; no negative)
+      operationId: kitchenRecordWastage
+      x-phase: 6
+      parameters:
+        - in: path
+          name: batchId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [portions]
+              properties:
+                portions:
+                  type: integer
+                  minimum: 1
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Updated batch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+  /admin/capacity:
+    get:
+      tags: [admin, capacity]
+      summary: Get 15-min capacity ceilings + utilization
+      operationId: adminGetCapacity
+      x-phase: 6
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: date
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Capacity config + buckets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CapacityConfig"
+    put:
+      tags: [admin, capacity]
+      summary: Set prep/pack ceilings per 15 minutes
+      operationId: adminPutCapacity
+      x-phase: 6
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CapacityUpsert"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CapacityConfig"
+  /riders/me:
+    get:
+      tags: [riders]
+      summary: Rider profile + eligibility
+      operationId: getRiderMe
       x-phase: 7
       responses:
         "200":
-          description: Assignment result
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderProfile"
   /riders/me/availability:
     post:
       tags: [riders]
-      summary: Go online/offline
+      summary: Go online/offline (eligibility gated)
       operationId: setRiderAvailability
       x-phase: 7
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [online]
+              properties:
+                online:
+                  type: boolean
+                pauseReason:
+                  type: string
+                locationPermissionGranted:
+                  type: boolean
+                appVersionOk:
+                  type: boolean
       responses:
         "200":
           description: Availability updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderProfile"
+        "403":
+          description: Ineligible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /riders/me/offers:
+    get:
+      tags: [riders]
+      summary: Active offer for rider (if any)
+      operationId: getRiderOffer
+      x-phase: 7
+      responses:
+        "200":
+          description: Offer or empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderOfferResponse"
+  /riders/me/offers/{offerId}/accept:
+    post:
+      tags: [riders]
+      summary: Accept offer atomically (one winner)
+      description: Concurrent accepts → one success; others ASSIGNMENT_CONFLICT.
+      operationId: acceptOffer
+      x-phase: 7
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Accepted assignment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+        "409":
+          description: Lost race or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /riders/me/offers/{offerId}/decline:
+    post:
+      tags: [riders]
+      summary: Decline offer
+      operationId: declineOffer
+      x-phase: 7
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Declined
+  /dispatch/board:
+    get:
+      tags: [dispatch]
+      summary: Dispatch board — unassigned/active
+      operationId: getDispatchBoard
+      x-phase: 7
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DispatchBoard"
+  /dispatch/assignments:
+    post:
+      tags: [dispatch]
+      summary: Manual/assisted assign or reassign rider
+      description: |
+        Creates offer or direct assignment. Atomic accept semantics apply when
+        riders race. Batching disabled. Auto-assign only if feature flag on.
+      operationId: assignRider
+      x-phase: 7
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignRiderRequest"
+      responses:
+        "200":
+          description: Assignment/offer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+  /dispatch/alerts:
+    get:
+      tags: [dispatch]
+      summary: Console alerts (no SMS)
+      operationId: listDispatchAlerts
+      x-phase: 7
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [alerts]
+                properties:
+                  alerts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DispatchAlert"
+  /deliveries/{deliveryId}/pickup:
+    post:
+      tags: [deliveries]
+      summary: Verify kitchen pickup (code + packages + seal)
+      operationId: verifyPickup
+      x-phase: 7
+      parameters:
+        - in: path
+          name: deliveryId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupVerifyRequest"
+      responses:
+        "200":
+          description: Picked up; customer PII minimized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderActiveTask"
+        "400":
+          description: Wrong code / unpacked / package mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /riders/me/active-task:
+    get:
+      tags: [riders]
+      summary: Active delivery task with redacted customer fields
+      operationId: getRiderActiveTask
+      x-phase: 7
+      responses:
+        "200":
+          description: Task or empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiderActiveTask"
+  /orders/{orderId}/timeline:
+    get:
+      tags: [orders, tracking]
+      summary: Order tracking timeline with ETA windows
+      description: Customer or authorized console role. Events are append-only milestones for UI timeline.
+      operationId: getOrderTimeline
+      x-phase: 8
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Timeline with promised and current ETA
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderTimelineResponse"
+        "404":
+          description: Not found or not owned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /deliveries/{id}/location:
     post:
-      tags: [location]
-      summary: Rider location sample
+      tags: [location, deliveries]
+      summary: Rider location sample (throttled ingest)
+      description: |
+        Accepts GPS samples for an active delivery assignment. Server coalesces/throttles writes.
+        Returns 409 when delivery is not active (completed, cancelled, or unassigned).
       operationId: postDeliveryLocation
       x-phase: 8
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Delivery id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationSample"
       responses:
         "202":
-          description: Accepted
+          description: Sample accepted for processing
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Delivery inactive or not assigned to caller
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                inactive:
+                  value:
+                    code: CONFLICT
+                    message: Location ingest rejected — delivery inactive
+                    requestId: req_example
+  /deliveries/{id}/complete:
+    post:
+      tags: [deliveries]
+      summary: Complete delivery (OTP or support override)
+      description: |
+        Rider marks delivery complete. `deliveryOtp` verified server-side when required.
+        `deliveryOtp` MUST NOT appear on rider GET task responses — submit here only.
+        Support/dispatch may set `supportOverride` (audited).
+      operationId: completeDelivery
+      x-phase: 8
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Delivery id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryCompleteRequest"
+      responses:
+        "200":
+          description: Delivery completed; order transitioned to delivered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryCompleteResponse"
+        "400":
+          description: Invalid OTP or unable to complete
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                otpInvalid:
+                  value:
+                    code: DELIVERY_OTP_INVALID
+                    message: Delivery OTP is invalid or expired
+                    requestId: req_example
+        "409":
+          description: Delivery already completed or inactive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/me/notification-preferences:
+    get:
+      tags: [users, notifications]
+      summary: Get notification preferences
+      operationId: getNotificationPreferences
+      x-phase: 8
+      responses:
+        "200":
+          description: Preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferences"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags: [users, notifications]
+      summary: Update notification preferences
+      operationId: putNotificationPreferences
+      x-phase: 8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationPreferences"
+      responses:
+        "200":
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferences"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /comms/masked-session:
+    post:
+      tags: [comms, support]
+      summary: Create time-bound masked call/chat session
+      description: |
+        Returns opaque token and masked handle — never raw phone numbers.
+        Session expires on delivery complete or `expiresAt`, whichever is sooner.
+      operationId: createMaskedCommsSession
+      x-phase: 8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MaskedCommsSessionRequest"
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaskedCommsSession"
+        "404":
+          description: Order not found or comms not available for state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /dispatch/live:
+    get:
+      tags: [dispatch, tracking]
+      summary: Live dispatch snapshot (riders + active deliveries)
+      description: |
+        Lightweight map/list feed for dispatcher console. Uses latest coalesced rider locations
+        and ETA risk badges. Poll-friendly; no WebSocket required for pilot.
+      operationId: getDispatchLive
+      x-phase: 8
+      parameters:
+        - in: query
+          name: outletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Live snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DispatchLiveSnapshot"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /support/tickets:
+    get:
+      tags: [support]
+      summary: List support tickets (own for customer; all for agents)
+      operationId: listSupportTickets
+      x-phase: 9
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [open, pending, resolved, closed]
+        - in: query
+          name: orderId
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ticket list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SupportTicketSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     post:
       tags: [support]
       summary: Create support ticket from order context
       operationId: createSupportTicket
       x-phase: 9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSupportTicketRequest"
       responses:
         "201":
           description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTicket"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Open ticket already exists for order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /support/tickets/{ticketId}:
+    get:
+      tags: [support]
+      summary: Get ticket with timeline
+      operationId: getSupportTicket
+      x-phase: 9
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ticket detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTicket"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /support/tickets/{ticketId}/messages:
+    post:
+      tags: [support]
+      summary: Append message to ticket timeline
+      operationId: appendSupportTicketMessage
+      x-phase: 9
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSupportTicketMessageRequest"
+      responses:
+        "201":
+          description: Message added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTicketEvent"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /support/tickets/{ticketId}/resolve:
+    post:
+      tags: [support, refunds]
+      summary: Agent resolves ticket (refund/coupon/deny)
+      operationId: resolveSupportTicket
+      x-phase: 9
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveSupportTicketRequest"
+      responses:
+        "200":
+          description: Resolution recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundDecision"
+        "403":
+          description: Insufficient role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Refund over agent cap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: REFUND_LIMIT_EXCEEDED
+                message: Refund amount exceeds agent cap
+                requestId: req-example
+  /orders/{orderId}/issues:
+    post:
+      tags: [support, orders]
+      summary: Report item-level issue (missing/wrong/spill)
+      operationId: createOrderIssue
+      x-phase: 9
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderIssueRequest"
+      responses:
+        "201":
+          description: Issue recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderIssue"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Outside issue window
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders/{orderId}/ratings:
+    post:
+      tags: [orders, support]
+      summary: Rate delivered order (food/packaging/delivery)
+      operationId: createOrderRating
+      x-phase: 9
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRatingRequest"
+      responses:
+        "201":
+          description: Rating saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRating"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Order not delivered or already rated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /refunds/{decisionId}/execute:
+    post:
+      tags: [refunds]
+      summary: Execute approved refund via mock gateway (idempotent)
+      operationId: executeRefund
+      x-phase: 9
+      parameters:
+        - in: path
+          name: decisionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Execution result (new or prior)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundExecution"
+        "404":
+          description: Decision not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Decision not refundable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /admin/config/support:
+    get:
+      tags: [admin, support]
+      summary: Support + legal placeholder config
+      operationId: getSupportConfig
+      x-phase: 9
+      responses:
+        "200":
+          description: Public/support config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportConfig"
+    put:
+      tags: [admin, support]
+      summary: Update support wa.me and legal placeholders
+      operationId: updateSupportConfig
+      x-phase: 9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SupportConfigPatch"
+      responses:
+        "200":
+          description: Updated config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportConfig"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /admin/finance/exceptions/latest:
+    get:
+      tags: [finance, admin]
+      summary: Latest finance exception report
+      operationId: getLatestFinanceExceptionReport
+      x-phase: 10
+      responses:
+        "200":
+          description: Latest report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinanceExceptionReport"
+        "404":
+          description: No report yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   securitySchemes:
     bearerAuth:
@@ -624,6 +2412,9 @@ components:
             - CATALOGUE_SOLD_OUT
             - CATALOGUE_STALE_PRICE
             - CART_VALIDATION_FAILED
+            - COUPON_INVALID
+            - COUPON_EXPIRED
+            - COUPON_MIN_ORDER
             - SLOT_FULL
             - OUTLET_CLOSED
             - ORDER_IDEMPOTENCY_CONFLICT
@@ -1099,8 +2890,485 @@ components:
           type: integer
         wastage:
           type: integer
+    AddressLabel:
+      type: string
+      enum: [home, work, other]
+    AddressUpsert:
+      type: object
+      required: [label, line1, lat, lng]
+      properties:
+        label:
+          $ref: "#/components/schemas/AddressLabel"
+        labelCustom:
+          type: string
+          description: Required when label=other
+        line1:
+          type: string
+        line2:
+          type: string
+        landmark:
+          type: string
+        city:
+          type: string
+          default: Mira Road
+        pincode:
+          type: string
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        deliveryInstructions:
+          type: string
+    Address:
+      allOf:
+        - $ref: "#/components/schemas/AddressUpsert"
+        - type: object
+          required: [id, userId]
+          properties:
+            id:
+              type: string
+              format: uuid
+            userId:
+              type: string
+              format: uuid
+            serviceable:
+              type: boolean
+            outletId:
+              type: string
+              format: uuid
+              nullable: true
+    ServiceabilityRequest:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        addressId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+          enum: [instant, scheduled]
+          default: instant
+      description: Provide lat+lng or addressId
+    ServiceabilityResult:
+      type: object
+      required: [deliverable, outletId, deliveryFeePaise, minOrderPaise, etaMinutes]
+      properties:
+        deliverable:
+          type: boolean
+        outletId:
+          type: string
+          format: uuid
+        zoneId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+          enum: [instant, scheduled]
+        deliveryFeePaise:
+          type: integer
+          minimum: 0
+        minOrderPaise:
+          type: integer
+          minimum: 0
+        etaMinutes:
+          type: integer
+          minimum: 0
+        codEnabled:
+          type: boolean
+          description: Always false for pilot unless Admin enables (flagged off)
+        slotsPreview:
+          type: array
+          items:
+            $ref: "#/components/schemas/Slot"
+    WaitlistRequest:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
+        phone:
+          type: string
+          pattern: '^\+91[6-9]\d{9}$'
+        note:
+          type: string
+    Outlet:
+      type: object
+      required: [id, name, city, timezone, openTime, closeTime]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        city:
+          type: string
+        timezone:
+          type: string
+          default: Asia/Kolkata
+        openTime:
+          type: string
+          example: "11:00"
+        closeTime:
+          type: string
+          example: "23:00"
+        lat:
+          type: number
+        lng:
+          type: number
+        packagingFeePaise:
+          type: integer
+          minimum: 0
+        defaultEtaMinutes:
+          type: integer
+    OutletUpsert:
+      type: object
+      properties:
+        name:
+          type: string
+        openTime:
+          type: string
+        closeTime:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        packagingFeePaise:
+          type: integer
+          minimum: 0
+        defaultEtaMinutes:
+          type: integer
+    DeliveryZone:
+      type: object
+      required: [id, outletId, name, deliveryFeePaise, minOrderPaise, active]
+      properties:
+        id:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        deliveryFeePaise:
+          type: integer
+          minimum: 0
+        minOrderPaise:
+          type: integer
+          minimum: 0
+        codEnabled:
+          type: boolean
+          default: false
+        etaMinutes:
+          type: integer
+        radiusKm:
+          type: number
+          nullable: true
+          description: When set, zone is circle around outlet lat/lng
+        polygon:
+          type: array
+          nullable: true
+          items:
+            type: object
+            required: [lat, lng]
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+          description: Ring of points when not using radius
+        active:
+          type: boolean
+    DeliveryZoneUpsert:
+      type: object
+      required: [name, deliveryFeePaise, minOrderPaise]
+      properties:
+        name:
+          type: string
+        deliveryFeePaise:
+          type: integer
+          minimum: 0
+        minOrderPaise:
+          type: integer
+          minimum: 0
+        codEnabled:
+          type: boolean
+          default: false
+        etaMinutes:
+          type: integer
+        radiusKm:
+          type: number
+          nullable: true
+        polygon:
+          type: array
+          nullable: true
+          items:
+            type: object
+            required: [lat, lng]
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        active:
+          type: boolean
+          default: true
+    Slot:
+      type: object
+      required: [id, outletId, startAt, endAt, cutoffAt, capacityTotal, capacityRemaining, full]
+      properties:
+        id:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        cutoffAt:
+          type: string
+          format: date-time
+        capacityTotal:
+          type: integer
+        capacityRemaining:
+          type: integer
+        full:
+          type: boolean
+    SlotListResponse:
+      type: object
+      required: [outletId, date, slots]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/Slot"
+    FeeLine:
+      type: object
+      required: [code, label, amountPaise]
+      properties:
+        code:
+          type: string
+          enum: [subtotal, packaging, delivery, tax, discount, tip, total]
+        label:
+          type: string
+        amountPaise:
+          type: integer
+        note:
+          type: string
+    CartLineInput:
+      type: object
+      required: [productId, variantId, quantity, priceVersion]
+      properties:
+        productId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        priceVersion:
+          type: integer
+          minimum: 1
+        addonOptionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notes:
+          type: string
+    CartUpsert:
+      type: object
+      required: [outletId, lines]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        addressId:
+          type: string
+          format: uuid
+          nullable: true
+        mode:
+          type: string
+          enum: [instant, scheduled]
+          default: instant
+        slotId:
+          type: string
+          format: uuid
+          nullable: true
+        couponCode:
+          type: string
+          nullable: true
+        tipPaise:
+          type: integer
+          minimum: 0
+          default: 0
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartLineInput"
+    CartLine:
+      allOf:
+        - $ref: "#/components/schemas/CartLineInput"
+        - type: object
+          required: [id, unitPricePaise, lineTotalPaise]
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            unitPricePaise:
+              type: integer
+            lineTotalPaise:
+              type: integer
+    CartQuoteRequest:
+      type: object
+      required: [outletId, lines]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        addressId:
+          type: string
+          format: uuid
+        lat:
+          type: number
+        lng:
+          type: number
+        couponCode:
+          type: string
+        tipPaise:
+          type: integer
+          minimum: 0
+          default: 0
+        lines:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/CartLineInput"
+    CartQuote:
+      type: object
+      required: [outletId, lines, fees, totalPaise, currency]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartLine"
+        fees:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeeLine"
+        totalPaise:
+          type: integer
+        currency:
+          type: string
+          enum: [INR]
+        tipPaise:
+          type: integer
+          description: Tip excluded from outlet revenue
+        discountPaise:
+          type: integer
+        priceSnapshotId:
+          type: string
+          description: Opaque snapshot for order create (Phase 05)
+    Cart:
+      type: object
+      required: [id, outletId, lines, quote]
+      properties:
+        id:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        addressId:
+          type: string
+          format: uuid
+          nullable: true
+        mode:
+          type: string
+          enum: [instant, scheduled]
+        slotId:
+          type: string
+          format: uuid
+          nullable: true
+        couponCode:
+          type: string
+          nullable: true
+        tipPaise:
+          type: integer
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartLine"
+        quote:
+          $ref: "#/components/schemas/CartQuote"
+        updatedAt:
+          type: string
+          format: date-time
+    CartValidationResult:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+        cart:
+          $ref: "#/components/schemas/Cart"
+        errors:
+          type: array
+          items:
+            type: object
+            required: [code, message]
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+              details:
+                type: object
+                additionalProperties: true
+    CouponValidationResult:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+        code:
+          type: string
+        discountPaise:
+          type: integer
+        failureCode:
+          type: string
+          enum: [COUPON_INVALID, COUPON_EXPIRED, COUPON_MIN_ORDER]
+        failureMessage:
+          type: string
     OrderState:
       type: string
+      description: Fulfilment only — see contracts/schemas/order-states.json
       enum:
         - confirmed
         - accepted
@@ -1117,8 +3385,1308 @@ components:
     RefundStatus:
       type: string
       enum: [none, requested, processing, partially_refunded, refunded, failed]
+    CreateOrderRequest:
+      type: object
+      required: [outletId]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        addressId:
+          type: string
+          format: uuid
+        mode:
+          type: string
+          enum: [instant, scheduled]
+          default: instant
+        slotId:
+          type: string
+          format: uuid
+          nullable: true
+        couponCode:
+          type: string
+          nullable: true
+        tipPaise:
+          type: integer
+          minimum: 0
+          default: 0
+        paymentMethod:
+          type: string
+          enum: [mock_online, cod]
+          default: mock_online
+          description: COD rejected unless feature flag + zone allow (pilot off)
+    OrderLine:
+      type: object
+      required: [productId, variantId, quantity, unitPricePaise, lineTotalPaise, priceVersion]
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        variantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        quantity:
+          type: integer
+        unitPricePaise:
+          type: integer
+        lineTotalPaise:
+          type: integer
+        priceVersion:
+          type: integer
+        notes:
+          type: string
+    Order:
+      type: object
+      required: [id, outletId, paymentStatus, refundStatus, totalPaise, currency, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        orderStatus:
+          allOf:
+            - $ref: "#/components/schemas/OrderState"
+          nullable: true
+          description: Null until payment captured (then confirmed); never stores payment lifecycle
+        paymentStatus:
+          $ref: "#/components/schemas/PaymentStatus"
+        refundStatus:
+          $ref: "#/components/schemas/RefundStatus"
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderLine"
+        fees:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeeLine"
+        totalPaise:
+          type: integer
+        tipPaise:
+          type: integer
+        currency:
+          type: string
+          enum: [INR]
+        addressSnapshot:
+          type: object
+          additionalProperties: true
+        slotId:
+          type: string
+          format: uuid
+          nullable: true
+        promisedWindow:
+          allOf:
+            - $ref: "#/components/schemas/EtaWindow"
+          description: Immutable promise set at order confirm; never narrowed retroactively
+        currentEta:
+          allOf:
+            - $ref: "#/components/schemas/EtaWindow"
+          nullable: true
+          description: Live ETA window; may shift on assign/pickup/location recalc (customer GET only)
+        deliveryOtp:
+          type: string
+          nullable: true
+          description: |
+            Customer-only plaintext OTP for handoff proof. Present when order is active and undelivered.
+            MUST NOT appear on rider APIs (active-task, complete GET) or dispatch board payloads.
+        timelineHint:
+          type: string
+          nullable: true
+          description: Short status copy for order list cards (e.g. "Rider is on the way")
+        paymentMethod:
+          type: string
+          enum: [mock_online, cod]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaymentIntent:
+      type: object
+      required: [orderId, provider, clientSecret, status, expiresAt]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [mock]
+        clientSecret:
+          type: string
+          description: Mock client token; not a live gateway secret
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        expiresAt:
+          type: string
+          format: date-time
+        amountPaise:
+          type: integer
+    PaymentWebhookBody:
+      type: object
+      required: [eventId, orderId, status]
+      properties:
+        eventId:
+          type: string
+          description: Provider event id for dedupe
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [captured, failed, pending]
+        paymentRef:
+          type: string
+    Invoice:
+      type: object
+      required: [id, orderId, issuedAt, lines, fees, totalPaise, currency, gst]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        paymentRef:
+          type: string
+          nullable: true
+        issuedAt:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderLine"
+        fees:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeeLine"
+        totalPaise:
+          type: integer
+        currency:
+          type: string
+          enum: [INR]
+        gst:
+          type: object
+          description: Placeholder legal entity until Admin fills real GSTIN
+          properties:
+            gstin:
+              type: string
+              example: PLACEHOLDER_GSTIN
+            taxPaise:
+              type: integer
+            legalName:
+              type: string
+              example: PLACEHOLDER_LEGAL_ENTITY
     AssignmentStatus:
       type: string
       enum: [unassigned, offered, accepted, arrived, picked_up, completed, cancelled]
+    KitchenQueueItem:
+      type: object
+      required: [order, sla]
+      properties:
+        order:
+          $ref: "#/components/schemas/Order"
+        sla:
+          type: object
+          required: [acceptBy, minutesRemaining]
+          properties:
+            acceptBy:
+              type: string
+              format: date-time
+            minutesRemaining:
+              type: integer
+        allergies:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
+    KitchenQueueResponse:
+      type: object
+      required: [outletId, items]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/KitchenQueueItem"
+    PackRequest:
+      type: object
+      required: [packageCount, sealConfirmed, checklist]
+      properties:
+        packageCount:
+          type: integer
+          minimum: 1
+        sealConfirmed:
+          type: boolean
+          description: Must be true to pack
+        checklist:
+          type: object
+          required: [itemsMatch, utensils, sealed]
+          properties:
+            itemsMatch:
+              type: boolean
+            utensils:
+              type: boolean
+            sealed:
+              type: boolean
+    PackResult:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          required: [pickupCode, packageCount]
+          properties:
+            pickupCode:
+              type: string
+            packageCount:
+              type: integer
+    KitchenTicket:
+      type: object
+      required: [orderId, pickupCode, lines, packageCount, allergens]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        shortCode:
+          type: string
+          description: Display short id
+        pickupCode:
+          type: string
+        packageCount:
+          type: integer
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderLine"
+        allergens:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
+        qrPayload:
+          type: string
+          description: Opaque payload for QR (orderId + pickupCode)
+    CapacityBucket:
+      type: object
+      required: [startAt, endAt, prepUsed, prepCeiling, packUsed, packCeiling]
+      properties:
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        prepUsed:
+          type: integer
+        prepCeiling:
+          type: integer
+        packUsed:
+          type: integer
+        packCeiling:
+          type: integer
+        prepFull:
+          type: boolean
+        packFull:
+          type: boolean
+    CapacityConfig:
+      type: object
+      required: [outletId, prepCeilingPer15m, packCeilingPer15m, buckets]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        prepCeilingPer15m:
+          type: integer
+          minimum: 1
+        packCeilingPer15m:
+          type: integer
+          minimum: 1
+        buckets:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapacityBucket"
+    CapacityUpsert:
+      type: object
+      required: [outletId, prepCeilingPer15m, packCeilingPer15m]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        prepCeilingPer15m:
+          type: integer
+          minimum: 1
+        packCeilingPer15m:
+          type: integer
+          minimum: 1
+    RiderProfile:
+      type: object
+      required: [id, online, eligible]
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        online:
+          type: boolean
+        eligible:
+          type: boolean
+        ineligibleReasons:
+          type: array
+          items:
+            type: string
+        pauseReason:
+          type: string
+          nullable: true
+    RiderOffer:
+      type: object
+      required: [id, orderId, expiresAt, status, earningsPaise]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [offered, accepted, declined, expired, cancelled]
+        earningsPaise:
+          type: integer
+          description: Transparent estimate
+        distanceKmHint:
+          type: number
+          nullable: true
+        dropLocality:
+          type: string
+          description: Locality only — not full address
+    RiderOfferResponse:
+      type: object
+      properties:
+        offer:
+          allOf:
+            - $ref: "#/components/schemas/RiderOffer"
+          nullable: true
+    Assignment:
+      type: object
+      required: [id, orderId, riderId, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        riderId:
+          type: string
+          format: uuid
+        offerId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          $ref: "#/components/schemas/AssignmentStatus"
+        deliveryId:
+          type: string
+          format: uuid
+          nullable: true
+    AssignRiderRequest:
+      type: object
+      required: [orderId, riderId]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        riderId:
+          type: string
+          format: uuid
+        reassign:
+          type: boolean
+          default: false
+        reason:
+          type: string
+          description: Required when reassign=true
+    DispatchBoard:
+      type: object
+      required: [outletId, unassigned, active, onlineRiders]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        unassigned:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        active:
+          type: array
+          items:
+            type: object
+            properties:
+              order:
+                $ref: "#/components/schemas/Order"
+              assignment:
+                $ref: "#/components/schemas/Assignment"
+              slaRisk:
+                type: boolean
+        onlineRiders:
+          type: array
+          items:
+            $ref: "#/components/schemas/RiderProfile"
+        autoAssignEnabled:
+          type: boolean
+          default: false
+    DispatchAlert:
+      type: object
+      required: [id, type, createdAt, message]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [offer_expired, no_rider, kitchen_delay]
+        orderId:
+          type: string
+          format: uuid
+          nullable: true
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    PickupVerifyRequest:
+      type: object
+      required: [pickupCode, packageCount, sealConfirmed]
+      properties:
+        pickupCode:
+          type: string
+        packageCount:
+          type: integer
+          minimum: 1
+        sealConfirmed:
+          type: boolean
+        overrideUnpacked:
+          type: boolean
+          default: false
+          description: Audited override if not packed
+    RiderActiveTask:
+      type: object
+      description: |
+        Minimized PII — no raw phone; locality not full address until later policy.
+        `deliveryOtp` MUST NOT appear on this DTO — riders submit OTP via POST /deliveries/{id}/complete only.
+        `dropLat`/`dropLng` included only after pickup (`status=picked_up`) for navigation handoff; omitted before pickup for privacy.
+      properties:
+        deliveryId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          description: Assignment/delivery milestone (e.g. accepted, picked_up)
+        pickupCodeHint:
+          type: string
+          description: Kitchen pickup code hint — not customer delivery OTP
+        dropLocality:
+          type: string
+        dropLat:
+          type: number
+          format: double
+          nullable: true
+          description: Drop coordinates for maps nav; only when status=picked_up
+        dropLng:
+          type: number
+          format: double
+          nullable: true
+          description: Drop coordinates for maps nav; only when status=picked_up
+        customerDisplayName:
+          type: string
+          description: First name or masked
+        packageCount:
+          type: integer
+        phone:
+          type: string
+          description: Must be omitted or fully masked — never raw
+          nullable: true
+    EtaWindow:
+      type: object
+      required: [startAt, endAt]
+      properties:
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+    LocationSample:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        recordedAt:
+          type: string
+          format: date-time
+          description: Client capture time; server may use receive time if absent
+        accuracyM:
+          type: number
+          minimum: 0
+          description: GPS accuracy in metres
+    OrderTimelineEvent:
+      type: object
+      required: [at, status, label]
+      properties:
+        at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          description: OrderState or delivery milestone key
+        label:
+          type: string
+          description: Human-readable label for customer timeline UI
+    OrderTimelineResponse:
+      type: object
+      required: [orderId, events]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderTimelineEvent"
+        promisedWindow:
+          allOf:
+            - $ref: "#/components/schemas/EtaWindow"
+          nullable: true
+        currentEta:
+          allOf:
+            - $ref: "#/components/schemas/EtaWindow"
+          nullable: true
+    DeliveryCompleteRequest:
+      type: object
+      properties:
+        deliveryOtp:
+          type: string
+          description: Customer handoff OTP; verified server-side when required
+        proofStub:
+          type: string
+          description: Photo or signature stub reference (pilot)
+        unableReason:
+          type: string
+          description: Reason when delivery cannot be completed normally
+        supportOverride:
+          type: boolean
+          default: false
+          description: Dispatch/support bypass (audited); skips OTP when authorized
+    DeliveryCompleteResponse:
+      type: object
+      required: [deliveryId, orderId, orderStatus]
+      properties:
+        deliveryId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        orderStatus:
+          $ref: "#/components/schemas/OrderState"
+        completedAt:
+          type: string
+          format: date-time
+    NotificationPreferences:
+      type: object
+      required: [marketingOptIn, pushEnabled]
+      properties:
+        marketingOptIn:
+          type: boolean
+          description: Marketing/promotional messages; critical order updates may bypass when false
+        pushEnabled:
+          type: boolean
+          description: Device push notifications enabled
+    MaskedCommsSessionRequest:
+      type: object
+      required: [orderId, channel]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        channel:
+          type: string
+          enum: [call, chat]
+    MaskedCommsSession:
+      type: object
+      required: [token, expiresAt, maskedHandle]
+      properties:
+        token:
+          type: string
+          description: Opaque session token for masked bridge — not a raw phone number
+        expiresAt:
+          type: string
+          format: date-time
+        maskedHandle:
+          type: string
+          description: Masked identifier for UI (e.g. +91XXXXXX1234 or chat handle)
+    DispatchLiveSnapshot:
+      type: object
+      required: [riders, activeDeliveries]
+      properties:
+        outletId:
+          type: string
+          format: uuid
+        generatedAt:
+          type: string
+          format: date-time
+        riders:
+          type: array
+          items:
+            type: object
+            required: [id, lat, lng, online]
+            properties:
+              id:
+                type: string
+                format: uuid
+              lat:
+                type: number
+                format: double
+              lng:
+                type: number
+                format: double
+              online:
+                type: boolean
+        activeDeliveries:
+          type: array
+          items:
+            type: object
+            required: [deliveryId, orderId, lat, lng, etaRisk]
+            properties:
+              deliveryId:
+                type: string
+                format: uuid
+              orderId:
+                type: string
+                format: uuid
+              lat:
+                type: number
+                format: double
+              lng:
+                type: number
+                format: double
+              etaRisk:
+                type: string
+                enum: [ok, warn, late]
+    SupportTicketStatus:
+      type: string
+      enum: [open, pending, resolved, closed]
+    SupportTicketCategory:
+      type: string
+      enum: [general, quality, delivery, refund]
+    CreateSupportTicketRequest:
+      type: object
+      required: [orderId, category, subject]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        category:
+          $ref: "#/components/schemas/SupportTicketCategory"
+        subject:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+          description: Initial customer message
+    SupportTicketSummary:
+      type: object
+      required: [id, orderId, category, subject, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        category:
+          $ref: "#/components/schemas/SupportTicketCategory"
+        subject:
+          type: string
+        status:
+          $ref: "#/components/schemas/SupportTicketStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SupportTicketEvent:
+      type: object
+      required: [id, eventType, actorType, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          enum: [message, status_change, resolution, attachment]
+        actorType:
+          type: string
+          enum: [customer, support, system]
+        actorId:
+          type: string
+          format: uuid
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    SupportTicket:
+      allOf:
+        - $ref: "#/components/schemas/SupportTicketSummary"
+        - type: object
+          required: [timeline]
+          properties:
+            timeline:
+              type: array
+              items:
+                $ref: "#/components/schemas/SupportTicketEvent"
+    CreateSupportTicketMessageRequest:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+        attachmentMeta:
+          type: object
+          description: Evidence metadata only — signed URL stub, no public blob
+          properties:
+            fileName:
+              type: string
+            contentType:
+              type: string
+            stubUrl:
+              type: string
+              description: Pilot stub signed URL placeholder
+    OrderIssueType:
+      type: string
+      enum: [missing, wrong, spill]
+    CreateOrderIssueRequest:
+      type: object
+      required: [issueType]
+      properties:
+        orderLineId:
+          type: string
+          format: uuid
+          nullable: true
+        issueType:
+          $ref: "#/components/schemas/OrderIssueType"
+        description:
+          type: string
+        evidenceMeta:
+          type: object
+          additionalProperties: true
+    OrderIssue:
+      type: object
+      required: [id, orderId, issueType, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        orderLineId:
+          type: string
+          format: uuid
+          nullable: true
+        issueType:
+          $ref: "#/components/schemas/OrderIssueType"
+        description:
+          type: string
+          nullable: true
+        ticketId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    CreateOrderRatingRequest:
+      type: object
+      required: [food, packaging, delivery]
+      properties:
+        food:
+          type: integer
+          minimum: 1
+          maximum: 5
+        packaging:
+          type: integer
+          minimum: 1
+          maximum: 5
+        delivery:
+          type: integer
+          minimum: 1
+          maximum: 5
+        tags:
+          type: array
+          items:
+            type: string
+            enum: [late, cold, damaged, wrong_item, great_taste, friendly_rider]
+        comment:
+          type: string
+          maxLength: 500
+    OrderRating:
+      type: object
+      required: [id, orderId, food, packaging, delivery, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        food:
+          type: integer
+        packaging:
+          type: integer
+        delivery:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    RefundAction:
+      type: string
+      enum: [refund_full, refund_partial, coupon, deny]
+    ResolveSupportTicketRequest:
+      type: object
+      required: [action]
+      properties:
+        action:
+          $ref: "#/components/schemas/RefundAction"
+        amountPaise:
+          type: integer
+          minimum: 0
+          description: Required for refund_partial; capped by policy
+        reason:
+          type: string
+        couponCode:
+          type: string
+          description: Pilot stub when action=coupon
+    RefundDecision:
+      type: object
+      required: [id, ticketId, orderId, action, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        ticketId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        action:
+          $ref: "#/components/schemas/RefundAction"
+        amountPaise:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum: [approved, denied]
+        reason:
+          type: string
+          nullable: true
+        decidedBy:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    RefundExecutionStatus:
+      type: string
+      enum: [pending, processing, succeeded, failed]
+    RefundExecution:
+      type: object
+      required: [id, decisionId, orderId, status, amountPaise, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        decisionId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/RefundExecutionStatus"
+        amountPaise:
+          type: integer
+        gatewayRef:
+          type: string
+          nullable: true
+        expectedWindowDays:
+          type: integer
+          description: Customer-visible refund ETA (mock)
+          default: 5
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SupportWaMe:
+      type: object
+      required: [url, message]
+      properties:
+        url:
+          type: string
+          format: uri
+          example: https://wa.me/919999000001
+        message:
+          type: string
+    LegalPlaceholders:
+      type: object
+      properties:
+        gstin:
+          type: string
+          description: Draft GST placeholder
+        fssaiLicense:
+          type: string
+          description: Draft FSSAI placeholder
+        grievanceEmail:
+          type: string
+          format: email
+        grievancePhone:
+          type: string
+        draft:
+          type: boolean
+          default: true
+    SupportConfig:
+      type: object
+      required: [waMe, legal]
+      properties:
+        waMe:
+          $ref: "#/components/schemas/SupportWaMe"
+        legal:
+          $ref: "#/components/schemas/LegalPlaceholders"
+        issueWindowHours:
+          type: integer
+          description: Read-only policy hint for clients
+        refundAgentCapPaise:
+          type: integer
+          description: Read-only cap hint for agent UI
+    SupportConfigPatch:
+      type: object
+      properties:
+        waMe:
+          $ref: "#/components/schemas/SupportWaMe"
+        legal:
+          $ref: "#/components/schemas/LegalPlaceholders"
+    PublicFeatureFlags:
+      type: object
+      required: [codEnabled, pickupEnabled, scheduledEnabled, tipsEnabled, autoAssignEnabled, batchingEnabled]
+      properties:
+        codEnabled:
+          type: boolean
+          default: false
+        pickupEnabled:
+          type: boolean
+          default: true
+        scheduledEnabled:
+          type: boolean
+          default: true
+        tipsEnabled:
+          type: boolean
+          default: true
+        referralsEnabled:
+          type: boolean
+          default: false
+        loyaltyEnabled:
+          type: boolean
+          default: false
+        autoAssignEnabled:
+          type: boolean
+          default: false
+        batchingEnabled:
+          type: boolean
+          default: false
+        experimentsEnabled:
+          type: boolean
+          default: false
+    AdminFeatureFlags:
+      allOf:
+        - $ref: "#/components/schemas/PublicFeatureFlags"
+        - type: object
+          required: [updatedAt]
+          properties:
+            updatedAt:
+              type: string
+              format: date-time
+    AdminFeatureFlagsPatch:
+      type: object
+      properties:
+        codEnabled:
+          type: boolean
+        pickupEnabled:
+          type: boolean
+        scheduledEnabled:
+          type: boolean
+        tipsEnabled:
+          type: boolean
+        referralsEnabled:
+          type: boolean
+        loyaltyEnabled:
+          type: boolean
+        autoAssignEnabled:
+          type: boolean
+        batchingEnabled:
+          type: boolean
+        experimentsEnabled:
+          type: boolean
+    PaymentLedgerEntryType:
+      type: string
+      enum: [food, packaging, delivery, tax, tip, discount, payment_capture, refund]
+    PaymentLedgerLine:
+      type: object
+      required: [id, orderId, outletId, entryType, amountPaise, currency, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        outletId:
+          type: string
+          format: uuid
+        entryType:
+          $ref: "#/components/schemas/PaymentLedgerEntryType"
+        amountPaise:
+          type: integer
+          description: Signed; discounts/refunds negative
+        currency:
+          type: string
+          enum: [INR]
+        paymentRef:
+          type: string
+          nullable: true
+        refundExecutionId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    OrderLedgerReconcile:
+      type: object
+      required: [orderId, lines, orderTotalPaise, paymentCapturedPaise, outletRevenuePaise, tipPaise, reconciled]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentLedgerLine"
+        orderTotalPaise:
+          type: integer
+        paymentCapturedPaise:
+          type: integer
+        outletRevenuePaise:
+          type: integer
+          description: Food + fees + tax − discount; excludes tip
+        tipPaise:
+          type: integer
+        reconciled:
+          type: boolean
+    RiderEarningLineType:
+      type: string
+      enum: [base, tip, adjustment, cod_stub]
+    RiderEarningLine:
+      type: object
+      required: [id, orderId, lineType, amountPaise, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        deliveryId:
+          type: string
+          format: uuid
+          nullable: true
+        lineType:
+          $ref: "#/components/schemas/RiderEarningLineType"
+        amountPaise:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    RiderEarningsStatement:
+      type: object
+      required: [riderId, lines, totalPaise, payoutStubs]
+      properties:
+        riderId:
+          type: string
+          format: uuid
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/RiderEarningLine"
+        totalPaise:
+          type: integer
+        payoutStubs:
+          type: array
+          items:
+            $ref: "#/components/schemas/PayoutStub"
+    PayoutStub:
+      type: object
+      required: [id, periodStart, periodEnd, totalPaise, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        periodStart:
+          type: string
+          format: date
+        periodEnd:
+          type: string
+          format: date
+        totalPaise:
+          type: integer
+        status:
+          type: string
+          enum: [pending, paid_stub]
+    ReportType:
+      type: string
+      enum: [orders, taxes, payments, refunds, riders, payouts]
+    ReportJob:
+      type: object
+      required: [id, reportType, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        reportType:
+          $ref: "#/components/schemas/ReportType"
+        status:
+          type: string
+          enum: [pending, ready, failed]
+        rowCount:
+          type: integer
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    AnalyticsEventInput:
+      type: object
+      required: [event, properties]
+      properties:
+        event:
+          type: string
+          description: Must match analytics-events.json dictionary
+        properties:
+          type: object
+          additionalProperties: true
+          description: No PII — orderId/uuid refs only
+    AnalyticsEventAccepted:
+      type: object
+      required: [event, accepted, source]
+      properties:
+        event:
+          type: string
+        accepted:
+          type: boolean
+        source:
+          type: string
+          enum: [client, server]
+    FinanceExceptionKind:
+      type: string
+      enum:
+        - unmatched_payment
+        - late_callback
+        - failed_refund
+        - negative_balance
+        - manual_closure
+    FinanceExceptionItem:
+      type: object
+      required: [kind, orderId, detail]
+      properties:
+        kind:
+          $ref: "#/components/schemas/FinanceExceptionKind"
+        orderId:
+          type: string
+          format: uuid
+          nullable: true
+        riderId:
+          type: string
+          format: uuid
+          nullable: true
+        detail:
+          type: string
+    FinanceExceptionReport:
+      type: object
+      required: [id, reportDate, items, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        reportDate:
+          type: string
+          format: date
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FinanceExceptionItem"
+        createdAt:
+          type: string
+          format: date-time
 security:
   - bearerAuth: []

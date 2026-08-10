@@ -4,11 +4,11 @@ Run after all task pages in this phase are complete.
 
 ## Automated
 
-- [ ] Accept/reject within SLA fields recorded
-- [ ] Reject paid order triggers refund workflow hook
-- [ ] Capacity bucket blocks over-accept/create as designed
-- [ ] Packed requires package count + seal confirmation
-- [ ] Pickup code/QR payload generated
+- [x] Accept/reject within SLA fields recorded
+- [x] Reject paid order triggers refund workflow hook
+- [x] Capacity bucket blocks over-accept/create as designed
+- [x] Packed requires package count + seal confirmation
+- [x] Pickup code/QR payload generated
 
 ## Manual / field
 

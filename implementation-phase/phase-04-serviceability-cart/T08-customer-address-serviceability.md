@@ -17,7 +17,7 @@ Location permission contextual flow; save address; show not deliverable + waitli
 
 ## Acceptance
 
-- [ ] Out of zone blocks checkout entry
+- [x] Out of zone blocks checkout entry
 
 ## Tests
 

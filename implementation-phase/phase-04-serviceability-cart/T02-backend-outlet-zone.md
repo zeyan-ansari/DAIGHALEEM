@@ -16,7 +16,7 @@ Outlet settings + polygon/radius zones with fee, min order, COD flag, ETA defaul
 
 ## Acceptance
 
-- [ ] Point inside/outside detected
+- [x] Point inside/outside detected
 
 ## Tests
 

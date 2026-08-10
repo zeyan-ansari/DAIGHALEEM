@@ -16,8 +16,8 @@ Save Home/Work/Other with fields from CUS-005; validate serviceability on select
 
 ## Acceptance
 
-- [ ] Auth required for save
-- [ ] List returns only own addresses
+- [x] Auth required for save
+- [x] List returns only own addresses
 
 ## Tests
 

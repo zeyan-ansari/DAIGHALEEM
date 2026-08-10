@@ -16,7 +16,7 @@ List slots with cutoff and remaining capacity (LOG-004 preview).
 
 ## Acceptance
 
-- [ ] Full slot flagged
+- [x] Full slot flagged
 
 ## Tests
 
