@@ -1,95 +1,36 @@
-# DAIG Haleem — Status & Asks
+# DAIG Haleem — What we still need
 
-**Updated:** 10 August 2026  
-**Repo:** https://github.com/zeyan-ansari/DAIGHALEEM  
-**Details:** `REQUIRED_DECISIONS.txt`
+**Updated:** 10 August 2026 · **Repo:** https://github.com/zeyan-ansari/DAIGHALEEM
 
----
+## Done / in progress
+- Product plan + phase system  
+- Peer PR merged (orchestration + lifecycle contracts)  
+- Phase 01 app scaffolds started (`daig-backend`, customer, rider, console)  
+- Pilot defaults: Mira Road · prepaid · COD off · instant + scheduled  
 
-## Snapshot
+## Configurable in Admin / Kitchen (you do **not** need to decide these in a doc)
+Enter later in the console — engineering builds them as settings:
+- Kitchen address, map pin, delivery radius/areas  
+- Open hours, slots, cutoffs  
+- Menu, sizes, **prices**, add-ons, allergens  
+- Batch / 15‑min capacity  
+- Delivery fee, min order, free-delivery threshold  
+- Pack / seal checklist  
+- Support hours text  
 
-| Area | Status |
-|------|--------|
-| Blueprint + 12-phase build plan | Done |
-| Peer PR (orchestration gates + lifecycle contracts) | **Merged** (#1) |
-| App code (backend / Flutter / console) | **Starting Phase 01 now** |
-| Live vendor keys | Not received — mocks until sandbox |
+## Still required from you (simple list)
 
-**Pilot:** Mira Road · prepaid only (COD off) · instant + scheduled · Flutter customer + Android rider · Next.js ops console
+| # | What | Why |
+|---|------|-----|
+| 1 | **Legal entity + GSTIN + FSSAI text** | Invoices & app legal pages |
+| 2 | **DAIG logo files** (SVG/PNG) | Branding (placeholders until then) |
+| 3 | **Rider model** (employee / contractor / vendor) | Legal / contracts |
+| 4 | **Google Play + Apple Developer** account owners | Publish apps |
+| 5 | **Who pays** Maps/SMS/Firebase/Razorpay/store bills | Finance |
+| 6 | **Sandbox API keys** when ready (Razorpay, MSG91, Maps, Firebase) | Leave mocks; not blocking coding |
+| 7 | **Live WhatsApp + phone + support owners** | Before public users |
+| 8 | **Soft-launch week** (optional) | Planning only |
 
----
-
-## Already decided
-
-- COD off; pickup off  
-- Refund policy + ₹500 agent / manager above  
-- Brand direction: black / deep maroon / muted gold  
-- Proposed vendors: Razorpay, Google Maps, MSG91, Exotel, WhatsApp, Firebase  
-- Platforms and sibling repo layout  
-
----
-
-## Still needed from you (trimmed)
-
-### Need soon (pilot-accurate data — Phases 03–07)
-
-| ID | Ask |
-|----|-----|
-| D01 | Kitchen address + lat/lng + Mira Road radius/areas |
-| D02 | Days/hours + slot length + cutoff |
-| D03 | Menu **prices**, add-ons, allergens |
-| D04 | Batch size + max orders per 15 min |
-| D07 | Delivery fee table + min order + free-delivery threshold |
-| D12 | Logo files (SVG/PNG) |
-| D14 | Confirm vendor list |
-| D15 | Legal entity yes/no + GSTIN + FSSAI |
-| D17 | Soft-launch week |
-
-### Need before public users / real money
-
-| ID | Ask |
-|----|-----|
-| D05/D06 | Rider model + pay |
-| D10 | Support hours + named owners + WhatsApp/phone |
-| D11 | Peak orders + riders |
-| D18 | Play / Apple accounts |
-| D23 | Pack/seal checklist (default pack rules used until then) |
-| D25 | Who pays vendor bills |
-| Keys | Razorpay + MSG91 + Maps + Firebase **sandbox** via secret manager |
-
-### Deferred (engineering defaults)
-
-Domains, test phones, languages (EN+HI), cloud host — local docker until staging.
-
----
-
-## API keys (sandbox first)
-
-Never commit secrets. Share via approved secret manager.
-
-| Vendor | When |
-|--------|------|
-| Razorpay | Before real payment tests (Phase 05) |
-| MSG91 | Before real OTP (Phase 02 can mock) |
-| Google Maps | Before real zones/ETA (Phase 04/08) |
-| Firebase | Before real push (Phase 08) |
-| Exotel / WhatsApp | Before masked call / WA (Phase 08/09) |
-
----
-
-## Engineering status
-
-1. Peer contribution from **zeyan-ansari** reviewed, approved, merged.  
-2. Collaborator **Siddiqui-Shahid** has write access — appropriate.  
-3. **Phase 01 foundation** is in progress: create sibling repos + scaffolds with mocks.  
-4. Missing Priority-A answers do **not** block Phase 01; they block pilot-accurate later phases (see `PHASE-DECISION-GATES.md`).
-
-**Your next step:** return the “Need soon” table (even rough numbers).  
-**Our next step:** finish Phase 01 scaffolds, then Phase 02 auth with mock OTP.
-
----
-
-## Sign-off
-
-Priority-A answers by: _______________  
-Name / role / date:
+## How to send
+Reply with items 1–8, or edit `REQUIRED_DECISIONS.txt`.  
+Secrets → approved secret manager only (never git / WhatsApp).

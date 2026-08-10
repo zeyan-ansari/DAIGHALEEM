@@ -1,167 +1,68 @@
-DAIG HALEEM — REQUIRED DECISIONS
-================================
-Phase 01 MAY start with mocks (see implementation-phase/PHASE-DECISION-GATES.md).
-Pilot launch still requires [BLOCKER] items closed.
+DAIG HALEEM — REQUIRED DECISIONS (short)
+=======================================
+Updated: 10 August 2026
 
-Status: UNANSWERED | PARTIAL | ANSWERED | DEFERRED
-Last updated: 10 August 2026
+Most ops settings are configured in Admin / Kitchen (not in this file):
+outlet pin & delivery zone, hours/slots, menu & prices, capacity,
+delivery fees / min order, pack checklist, support hours text.
 
----------------------------------------------------------------------------
-LOCKED IN (no action)
----------------------------------------------------------------------------
-D08 COD — ANSWERED: disabled for pilot; feature-flagged later.
-D09 Cancel/refund — ANSWERED: full refund before kitchen accept; after accept
-  before prep support may approve; once prep starts customer cancel normally
-  non-refundable; DAIG-fault full refund; item-level for missing/damaged;
-  agent ≤ ₹500, manager above.
-D13 Platforms — ANSWERED: Flutter customer (Android+iOS), rider Android-first,
-  Next.js console, no customer web MVP.
-D16 Repo paths — ANSWERED: sibling folders ../daig-* next to DAIGHALEEM.
+Phase 01+ coding uses mocks/placeholders until those are entered in-app.
 
 ---------------------------------------------------------------------------
-D01 — Launch geography                                    [BLOCKER]
+ALREADY LOCKED
 ---------------------------------------------------------------------------
-Owner: Founder/Ops | Status: PARTIAL
-Answer: Pilot city Mira Road, Maharashtra.
-Still needed: kitchen full address, lat/lng, delivery radius OR area list.
-
-
----------------------------------------------------------------------------
-D02 — Order model                                         [BLOCKER]
----------------------------------------------------------------------------
-Owner: Founder/Ops | Status: PARTIAL
-Answer: Instant + scheduled slots + preorder for future slots. Pickup OFF.
-Still needed: operating days/hours, slot length, cutoff before each slot.
-
+- COD off for pilot (feature-flagged)
+- Pickup off for MVP
+- Instant + scheduled/preorder
+- Refund rules + agent ≤ ₹500 / manager above
+- Platforms: Flutter customer + Android-first rider + Next.js console
+- Proposed vendors: Razorpay, Google Maps, MSG91, Exotel, WhatsApp, Firebase
 
 ---------------------------------------------------------------------------
-D03 — Menu                                                [BLOCKER]
+STILL NEED FROM YOU (only these)
 ---------------------------------------------------------------------------
-Owner: Culinary/Ops | Status: PARTIAL
-Answer: Proposed: regular / butter / dry-fruit haleem; 500 g and 1 kg packs.
-Still needed: prices, add-ons, allergens, final names/weights.
 
+1) Legal display (before public pilot / invoices)
+   Status: OPEN
+   - Confirm operating entity (Hashforgamers Pvt Ltd yes/no, or correct name)
+   - GSTIN
+   - FSSAI number/text to show in app
+   (These become Admin fields — we still need the real values.)
 
----------------------------------------------------------------------------
-D04 — Capacity                                            [BLOCKER]
----------------------------------------------------------------------------
-Owner: Kitchen | Status: UNANSWERED
-Still needed: batch size; max prep orders / 15 min; max packs / 15 min.
+2) Brand logo files
+   Status: OPEN
+   - SVG/PNG of DAIG logo (placeholders used until then)
 
+3) Rider employment model (legal)
+   Status: OPEN
+   - Employee / contractor / vendor / hybrid
+   (Pay rates themselves are Admin-configurable later.)
 
----------------------------------------------------------------------------
-D05 — Delivery workforce                                  [BLOCKER]
----------------------------------------------------------------------------
-Owner: Founder/Legal/Ops | Status: UNANSWERED
-Still needed: employee vs contractor vs vendor; shifts vs go-online;
-expected rider count at pilot.
+4) App store accounts (before store release)
+   Status: OPEN
+   - Google Play Console owner
+   - Apple Developer owner
 
+5) Vendor billing owner
+   Status: OPEN
+   - Who pays Razorpay / Maps / MSG91 / Firebase / store fees
 
----------------------------------------------------------------------------
-D06 — Rider pay                                           [BLOCKER]
----------------------------------------------------------------------------
-Owner: Finance/Ops | Status: UNANSWERED
-Still needed: base/distance/wait/surge; tip 100% to rider?; payout cadence.
+6) Sandbox keys (when leaving mocks — not needed to keep coding)
+   Status: OPEN
+   - Razorpay, MSG91, Google Maps, Firebase via secret manager
+   - Confirm proposed vendor list or name replacements
 
+7) Live support contacts (before public users)
+   Status: OPEN
+   - WhatsApp Business number + escalation phone
+   - Named L1/L2 owners
 
----------------------------------------------------------------------------
-D07 — Customer fees                                       [BLOCKER]
----------------------------------------------------------------------------
-Owner: Finance | Status: PARTIAL
-Answer: Distance/zone delivery fee; packaging in item price; no platform fee.
-Still needed: fee table, min order ₹, free-delivery threshold or none, GST
-display (inclusive vs broken out).
-
-
----------------------------------------------------------------------------
-D10 — Support                                             [BLOCKER]
----------------------------------------------------------------------------
-Owner: Ops | Status: PARTIAL
-Answer: In-app + WhatsApp; phone for active deliveries; live 5 min;
-non-live 2 business hours.
-Still needed: hours/days, WhatsApp/phone numbers, named L1/L2 owners.
-
+8) Soft-launch week (optional for coding)
+   Status: OPEN
+   - Target week + go/no-go owner
 
 ---------------------------------------------------------------------------
-D11 — Peak forecast                                       [BLOCKER]
----------------------------------------------------------------------------
-Owner: Founder/Ops | Status: UNANSWERED
-Still needed: normal + peak orders / 15 min; active riders at peak.
-
-
----------------------------------------------------------------------------
-D12 — Brand UX                                            [BLOCKER]
----------------------------------------------------------------------------
-Owner: Brand/Design | Status: PARTIAL
-Answer: Black, deep maroon, muted gold; premium Hyderabadi food photography;
-warm/confident tone.
-Still needed: logo SVG/PNG files (placeholders OK until then for Phase 01–03).
-
-
----------------------------------------------------------------------------
-D14 — Vendors                                             [BLOCKER]
----------------------------------------------------------------------------
-Owner: Tech/Finance | Status: PARTIAL
-Answer: Proposed — Razorpay, Google Maps, MSG91, Exotel, Meta WhatsApp Cloud,
-Firebase (Analytics/Crashlytics/FCM/Remote Config). Secrets in approved
-secret manager only — never git.
-Still needed: written vendor approval; sandbox keys location when ready.
-
-
----------------------------------------------------------------------------
-D15 — Legal / tax / compliance                            [BLOCKER]
----------------------------------------------------------------------------
-Owner: Legal/Finance | Status: PARTIAL
-Answer: Proposed entity Hashforgamers Private Limited only if DAIG operates
-under it.
-Still needed: confirm entity yes/no; GSTIN; FSSAI text; Terms/Privacy owner;
-invoice legal name/address; tax-inclusive menu prices?; rider contract type;
-data retention (orders/GPS/evidence).
-
-
----------------------------------------------------------------------------
-D17 — Pilot date                                          [BLOCKER]
----------------------------------------------------------------------------
-Owner: Founder | Status: UNANSWERED
-Still needed: soft-launch week; go/no-go owner name.
-
-
----------------------------------------------------------------------------
-D18 — App store accounts                                  [BLOCKER]
----------------------------------------------------------------------------
-Owner: Founder/Tech | Status: UNANSWERED
-Still needed: Google Play + Apple Developer account owners/status.
-Default package names if unset: com.daig.customer / com.daig.rider.
-
-
----------------------------------------------------------------------------
-D23 — Pack / quality SOP                                  [BLOCKER]
----------------------------------------------------------------------------
-Owner: Culinary/Ops | Status: UNANSWERED
-Still needed: seal/pack checklist items for kitchen + rider apps.
-Default until answered: lid locked, outer bag, upright, package count match,
-no visible spill.
-
-
----------------------------------------------------------------------------
-D25 — Vendor billing owner                                [BLOCKER]
----------------------------------------------------------------------------
-Owner: Finance | Status: UNANSWERED
-Still needed: who pays Razorpay/Maps/MSG91/Firebase/Apple/Google fees.
-
-
----------------------------------------------------------------------------
-DEFERRED WITH DEFAULTS (not needed to start coding)
----------------------------------------------------------------------------
-D19 Domains — DEFERRED. Default: local docker hosts until staging chosen.
-D21 Test users — DEFERRED. Default: mock OTP + seed admin in staging.
-D22 Languages — DEFERRED. Default: English + Hindi.
-D24 Cloud hosting — DEFERRED. Default: local docker for Phase 01–05;
-  pick AWS/GCP/PaaS before public staging.
-
----------------------------------------------------------------------------
-SIGN-OFF (pilot launch)
+SIGN-OFF (pilot)
 ---------------------------------------------------------------------------
 Name:
 Date:
-Notes:
